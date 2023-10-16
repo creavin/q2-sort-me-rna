@@ -1,2 +1,2 @@
 include versioneer.py
-include q2templates/_version.py
+include q2_sort_me_rna/_version.py

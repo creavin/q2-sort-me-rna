@@ -12,6 +12,10 @@ import shutil
 import pandas as pd
 
 
+def dummy_func():
+    return None
+
+
 def df_to_html(df, border="0", classes=('table', 'table-striped',
                                         'table-hover'), **kwargs):
 

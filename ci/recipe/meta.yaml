@@ -3,7 +3,7 @@
 
 # TODO review meta.yml spec and fill in missing fields as necessary (e.g. build number).
 package:
-  name: q2templates
+  name: q2-sort-me-rna
   version: {{ version }}
 
 source:
@@ -22,16 +22,27 @@ requirements:
     - setuptools
     - jinja2
     - pandas {{ pandas }}
+    # TODO add external req
+    # - scikit-bio {{ scikit_bio }}
+    # - emperor ==1.0.3
+    # - qiime2 {{ qiime2_epoch }}.*
+    # - q2templates {{ qiime2_epoch }}.*
+    # - q2-types {{ qiime2_epoch }}.*
 
 test:
   requires:
     - pytest
+    # TODO decide if needed
+    # - qiime2 >={{ qiime2 }}
+    # - q2templates >={{ q2templates }}
+    # - q2-types >={{ q2_types }}
 
   imports:
-    - q2templates
+    - q2_sort_me_rna  # TODO add tests
+    - qiime2.plugins.sort_me_rna  # TODO check if correct and add
 
   commands:
-    - py.test --pyargs q2templates
+    - py.test --pyargs q2_sort_me_rna
 
 about:
   home: https://qiime2.org

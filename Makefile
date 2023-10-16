@@ -11,6 +11,10 @@ lint:
 test: all
 	py.test
 
+#  TODO: see why emp offers this functionality
+#test-cov: all
+#	py.test --cov=q2_emperor
+
 install: all
 	$(PYTHON) setup.py install
 
