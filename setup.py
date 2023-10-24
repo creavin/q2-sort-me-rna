@@ -22,7 +22,6 @@ setup(
     entry_points={
         'qiime2.plugins':
         ['q2-sort-me-rna=q2_sort_me_rna.plugin_setup:plugin']
-        # TODO create and connect to entry point
     },
     package_data={
         'q2_sort_me_rna': [  # TODO remove these templates if not used

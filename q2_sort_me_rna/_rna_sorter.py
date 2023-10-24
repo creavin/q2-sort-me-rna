@@ -7,11 +7,10 @@
 # ----------------------------------------------------------------------------
 
 from .util import dummy_func
+from qiime2.plugin import SemanticType
 
-# TODO implement func calls here
 
-
-def foobar(source_files, output_dir, context=None):
+def foobar(echo_phrase: str) -> None:
     """Render user provided source files into a QIIME 2 visualization template.
 
 
@@ -27,4 +26,8 @@ def foobar(source_files, output_dir, context=None):
         same context will be provided to all templates being rendered.
 
     """
-    return dummy_func()
+    print(echo_phrase)
+
+    dummy_func()
+
+    return SemanticType('Phrase')

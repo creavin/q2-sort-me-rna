@@ -6,12 +6,11 @@
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
 
-from ._templates import dummy_func
-from .util import df_to_html
+from ._rna_sorter import foobar
 from ._version import get_versions
 
 
 __version__ = get_versions()['version']
-del get_versions
+del get_versions  # TODO is this required?
 
-__all__ = ['render', 'df_to_html']
+__all__ = ['foobar']
