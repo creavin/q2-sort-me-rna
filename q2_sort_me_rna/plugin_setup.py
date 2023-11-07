@@ -7,14 +7,19 @@
 # ----------------------------------------------------------------------------
 
 import q2_sort_me_rna
+from qiime2.plugin import model
+
+from q2_sort_me_rna._type import aligned_seq
 from q2_sort_me_rna import _rna_sorter as rna_sorter
 
 from qiime2.plugin import (Plugin, Str, SemanticType, Choices, Int, Bool, Range,
                            Float, Set, Visualization, Metadata, MetadataColumn,
                            Categorical, Numeric, Citations)
-from q2_types.ordination import PCoAResults
+from q2_types.distance_matrix import DistanceMatrix
+from q2_types.feature_data import FeatureData, BLAST6
 
-citations = Citations.load('citations.bib', package='q2_diversity')
+
+citations = Citations.load('citations.bib', package='q2_sort_me_rna')
 
 plugin = Plugin(
     name='sort-me-rna',
@@ -25,25 +30,77 @@ plugin = Plugin(
     short_description='Plugin for calling SortMeRNA.',
 )
 
-phrase = SemanticType('Phrase')
-plugin.register_semantic_types(phrase)
-
 plugin.methods.register_function(
-    function=rna_sorter.foobar,
+    function=rna_sorter.sort_rna,
     inputs={},
     parameters={
-        'echo_phrase': Str,
+        'ref': Str,
+        'reads': Str,
+        'workdir': Str,
+        'kvdb': Str,
+        'idx_dir': Str,
+        'readb': Str,
+        'fastx': Bool,
+        'sam': Bool,
+        'sq': Bool,
+        'blast': Str,
+        # 'aligned,
+        # 'other,
+        'num_alignments': Int,
+        'no_best': Bool,
+        'min_lis': Int,
+        'print_all_reads': Bool,
+        'paired': Bool,
+        'paired_in': Bool,
+        'paired_out': Bool,
+        'out2': Bool,
+        'sout': Bool,
+        'zip_out': Bool,
+        'match': Int,
+        'mismatch': Int,
+        'gap_open': Int,
+        'gap_ext': Int,
+        'e': Float,
+        'f': Bool,
+        'n': Bool,
+        'r': Bool,
+        # [OTU_PICKING]
+        'id': Int,
+        'coverage': Int,
+        'de_novo_otu': Bool,
+        'otu_map': Bool,
+         # [ADVANCED]
+         # passes,
+        'edges': Int,
+        'num_seeds': Bool,
+        'full_search': Int,
+        'pid': Bool,
+        'a': Int,
+        'threads': Int,
+         # [INDEXING]
+        'index': Int,
+        'l': Float,
+        'm': Float,
+        'v': Bool,
+        'interval': Int,
+        'max_pos': Int,
+         # [HELP]
+        'h': Bool ,
+        'version': Bool,
+         # [DEVELOPER]
+        'dbg_put_db': Bool,
+        'cmd': Bool,
+        'task': Int,
+        'dbg_level': Int
     },
-    outputs=[
-        ('semantic_echo_phrase', phrase),
-    ],
+    outputs=[ ('aligned_seq', FeatureData[BLAST6])],
     input_descriptions={},
     parameter_descriptions={
-        'echo_phrase': ('dummy test to be printed')
     },
     output_descriptions={
-        'semantic_echo_phrase': ("semantic type of the echo phrase")
+        'aligned_seq': "foobar"
     },
     name='Foobar test method',
     description=('This is a test method that does nothing but print the input')
 )
+

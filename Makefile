@@ -1,26 +1,40 @@
-.PHONY: all lint test install dev clean distclean
+sortmerna_work_dir = out
+q2smr_output_dir = output
 
-PYTHON ?= python
+install: 
+	pip install -e .
 
-all: ;
+clean: 
+	rm -rdf $(sortmerna_work_dir)
+	rm -rdf output
 
 lint:
 	q2lint
 	flake8
 
-test: all
+test:
 	py.test
+#	py.test --cov=q2_emperor #  TODO: see why emp offers this functionality
 
-#  TODO: see why emp offers this functionality
-#test-cov: all
-#	py.test --cov=q2_emperor
+blast_cache:
+	qiime dev refresh-cache
 
-install: all
-	$(PYTHON) setup.py install
+sortmerna:
+	rm -fdr $(sortmerna_work_dir)
+	sortmerna --ref ./rrna_references.fasta \
+	--reads ./synthetic_data.fastq \
+	--workdir $(sortmerna_work_dir)
 
-dev: all
-	pip install -e .
+run: clean 
+	mkdir $(q2smr_output_dir)
+	qiime sort-me-rna sort-rna \
+	--p-ref "./rrna_references.fasta"  \
+	--p-reads "./synthetic_data.fastq" \
+	--p-workdir "./$(q2smr_output_dir)" \
+	--o-aligned-seq "./$(q2smr_output_dir)/qiime-output" \
+	--verbose
 
-clean: distclean
+peek: 
+	qiime tools peek ./$(q2smr_output_dir)/qiime-output.qza 
 
-distclean: ;
+full: install clean blast_cache test run peek

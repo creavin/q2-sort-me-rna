@@ -20,18 +20,9 @@ setup(
     license='BSD-3-Clause',
     url='https://qiime2.org',
     entry_points={
-        'qiime2.plugins':
-        ['q2-sort-me-rna=q2_sort_me_rna.plugin_setup:plugin']
-    },
-    package_data={
-        'q2_sort_me_rna': [  # TODO remove these templates if not used
-            # 'assets/index.html', 'citations.bib'  # TODO add assets
-            'templates/*.html',
-            'templates/assets/css/*.css',
-            'templates/assets/js/*.js',
-            'templates/assets/img/*.png',
-            'templates/assets/fonts/glyphicons-*'
-        ]
+        'qiime2.plugins': [
+            'q2-sort-me-rna=q2_sort_me_rna.plugin_setup:plugin'
+        ],
     },
     zip_safe=False,
 )
