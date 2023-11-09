@@ -44,8 +44,8 @@ plugin.methods.register_function(
         'sam': Bool,
         'sq': Bool,
         'blast': Str,
-        # 'aligned,
-        # 'other,
+        'aligned': Str, # string/bool
+        'other': Str, # string/bool
         'num_alignments': Int,
         'no_best': Bool,
         'min_lis': Int,
@@ -70,7 +70,7 @@ plugin.methods.register_function(
         'de_novo_otu': Bool,
         'otu_map': Bool,
          # [ADVANCED]
-         # passes,
+        'passes': Str, # "INT,INT,INT"
         'edges': Int,
         'num_seeds': Bool,
         'full_search': Int,

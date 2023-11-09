@@ -34,6 +34,16 @@ run: clean
 	--o-aligned-seq "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
 
+run1: clean 
+	mkdir $(q2smr_output_dir)
+	qiime sort-me-rna sort-rna \
+	--p-ref "./rrna_references.fasta"  \
+	--p-reads "./synthetic_data.fastq" \
+	--p-workdir "./$(q2smr_output_dir)" \
+	--p-passes "1,1,1" \
+	--o-aligned-seq "./$(q2smr_output_dir)/qiime-output" \
+	--verbose
+
 peek: 
 	qiime tools peek ./$(q2smr_output_dir)/qiime-output.qza 
 

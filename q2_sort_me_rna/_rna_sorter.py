@@ -21,8 +21,8 @@ def sort_rna(ref: str,
             sam: bool = None,
             sq: bool = None,
             blast: str = None,
-            #  aligned = None, # string/bool
-            #  other = None, # string/bool
+            aligned: str = None, # string/bool
+            other: str = None, # string/bool
             num_alignments: int = None, 
             no_best: bool = None, # TODO needs to by hyphenated, check if mistake
             min_lis: int = None,
@@ -47,7 +47,7 @@ def sort_rna(ref: str,
             de_novo_otu: bool = None,
             otu_map: bool = None,
             # [ADVANCED]
-            # passes = None, (int, int, int)
+            passes: str = None, # (int,int,int)
             edges: int = None,
             num_seeds: bool = None,
             full_search: int = None,
@@ -80,6 +80,8 @@ def sort_rna(ref: str,
 
     uppercase_args = ['sq', 'f', 'n', 'r', 'l']
     hyphenated_args = ['idx_dir', 'no_best', 'zip_out', 'dbg_level']
+    # string_or_bool_args = ['aligned, other'] # no action required?
+
 
     for arg in arg_value_dict:
         if not (value := arg_value_dict[arg]) or arg == "arg_value_dict":
