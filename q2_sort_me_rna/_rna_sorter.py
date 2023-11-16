@@ -8,6 +8,14 @@
 
 import subprocess
 import pandas as pd
+import os
+import re
+import shutil
+from q2_types.feature_data import (FeatureData, Taxonomy, Sequence, 
+                                   DNAFASTAFormat, BLAST6, BLAST6Format)
+#SequencesWithQuality,
+
+from q2_types.per_sample_sequences import (SequencesWithQuality)
 
 
 def sort_rna(ref: str, 
@@ -69,7 +77,6 @@ def sort_rna(ref: str,
             cmd: bool = None,
             task: int = None,
             dbg_level: int = None, # hyphenated
-            # ) -> FeatureData[BLAST6]:
             ) -> pd.DataFrame:
     arg_value_dict = locals()
     print(locals())
@@ -81,7 +88,6 @@ def sort_rna(ref: str,
     uppercase_args = ['sq', 'f', 'n', 'r', 'l']
     hyphenated_args = ['idx_dir', 'no_best', 'zip_out', 'dbg_level']
     # string_or_bool_args = ['aligned, other'] # no action required?
-
 
     for arg in arg_value_dict:
         if not (value := arg_value_dict[arg]) or arg == "arg_value_dict":
@@ -107,12 +113,28 @@ def sort_rna(ref: str,
     except Exception as e:
         print(f"An error occurred: {e}")
         raise e
+
+
+    # Create a qiime artifact of the smr output
+    blast_fmt = BLAST6Format()
+    shutil.copy(f'{workdir}/out/aligned.blast', f"{str(blast_fmt)}")
+    print(blast_fmt.view(pd.DataFrame))
+
+    return blast_fmt.view(pd.DataFrame)
+
+
+
+    # from q2_types.per_sample_sequences import (
+    #     CasavaOneEightSingleLanePerSampleDirFmt,
+    # )
+
+    # # list the files in the output dir
+    # output_files = os.listdir(f'{workdir}/out')
+    # for file in output_files:
+    #     extension = os.path.splitext(file)[1]
+    #     if extension == '.log':
+    #         continue
         
-    return pd.read_csv(f'{workdir}/out/aligned.blast', sep='\t', header=None)
-    # return Artifact.import_data('FeatureData[BLAST6]', './out/out/aligned.blast')
-    # return pd.DataFrame()
-    # asx = SemanticType('aligned_seq')
-    # return Artifact.import_data(asx, view="./out/out/aligned.blast")
-    # return FeatureData[BLAST6]
-    # return SemanticType('aligned_seq')
-    # return DirectoryFormat("./out", "r")
+    #     if extension == '.fq':
+    #         SequencesWithQuality.format = 'fastq'
+        
