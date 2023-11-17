@@ -7,16 +7,10 @@
 # ----------------------------------------------------------------------------
 
 import q2_sort_me_rna
-from qiime2.plugin import model
-
-from q2_sort_me_rna._type import aligned_seq
+from qiime2.plugin import Plugin, Str, Bool, Int, Float, Citations
 from q2_sort_me_rna import _rna_sorter as rna_sorter
-
-from qiime2.plugin import (Plugin, Str, SemanticType, Choices, Int, Bool, Range,
-                           Float, Set, Visualization, Metadata, MetadataColumn,
-                           Categorical, Numeric, Citations)
-from q2_types.distance_matrix import DistanceMatrix
-from q2_types.feature_data import FeatureData, BLAST6
+from q2_types.sample_data import SampleData
+from q2_types.per_sample_sequences import SequencesWithQuality
 
 
 citations = Citations.load('citations.bib', package='q2_sort_me_rna')
@@ -93,7 +87,8 @@ plugin.methods.register_function(
         'task': Int,
         'dbg_level': Int
     },
-    outputs=[ ('aligned_seq', FeatureData[BLAST6])],
+    # outputs=[ ('aligned_seq', FeatureData[BLAST6])],
+    outputs=[ ('aligned_seq', SampleData[SequencesWithQuality])],
     input_descriptions={},
     parameter_descriptions={
     },

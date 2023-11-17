@@ -9,18 +9,18 @@
 import subprocess
 import pandas as pd
 import os
-import re
+import gzip
 import shutil
-from q2_types.feature_data import (FeatureData, Taxonomy, Sequence, 
-                                   DNAFASTAFormat, BLAST6, BLAST6Format)
-#SequencesWithQuality,
 
-from q2_types.per_sample_sequences import (SequencesWithQuality)
+from q2_types.feature_data import BLAST6Format
+from q2_types.per_sample_sequences import CasavaOneEightSingleLanePerSampleDirFmt
 
+DEBUG = True
 
-def sort_rna(ref: str, 
+def sort_rna(
+            ref: str, 
             reads: str,
-            # COMMON
+            # [COMMON]
             workdir: str = 'out',
             kvdb: str = None,
             idx_dir: str = None, # hyphenated
@@ -77,9 +77,11 @@ def sort_rna(ref: str,
             cmd: bool = None,
             task: int = None,
             dbg_level: int = None, # hyphenated
-            ) -> pd.DataFrame:
-    arg_value_dict = locals()
-    print(locals())
+            ) -> CasavaOneEightSingleLanePerSampleDirFmt:
+
+    if DEBUG:
+        arg_value_dict = locals()
+        print(locals())
 
     command = 'sortmerna'
     command_delimiter = ' '
@@ -87,7 +89,6 @@ def sort_rna(ref: str,
 
     uppercase_args = ['sq', 'f', 'n', 'r', 'l']
     hyphenated_args = ['idx_dir', 'no_best', 'zip_out', 'dbg_level']
-    # string_or_bool_args = ['aligned, other'] # no action required?
 
     for arg in arg_value_dict:
         if not (value := arg_value_dict[arg]) or arg == "arg_value_dict":
@@ -104,37 +105,44 @@ def sort_rna(ref: str,
         else:
             parameters.append(f'--{arg} {value}')
 
-    command_string = f'{command}{command_delimiter}{" ".join(parameters)}'
-    try:
-        subprocess.run(command_string, shell=True, check=True)
-    except subprocess.CalledProcessError as e:
-        print(f"Command failed: {e}")
-        raise e
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        raise e
+    if False:
+        command_string = f'{command}{command_delimiter}{" ".join(parameters)}'
+        try:
+            subprocess.run(command_string, shell=True, check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Command failed: {e}")
+            raise e
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            raise e
 
+    # Handle Output
+    output_files = os.listdir(f'{workdir}/out')
+    for file in output_files:
+        extension = os.path.splitext(file)[1]
+        if extension == '.log': # TODO handle log file
+            continue
 
-    # Create a qiime artifact of the smr output
-    blast_fmt = BLAST6Format()
-    shutil.copy(f'{workdir}/out/aligned.blast', f"{str(blast_fmt)}")
-    print(blast_fmt.view(pd.DataFrame))
-
-    return blast_fmt.view(pd.DataFrame)
-
-
-
-    # from q2_types.per_sample_sequences import (
-    #     CasavaOneEightSingleLanePerSampleDirFmt,
-    # )
-
-    # # list the files in the output dir
-    # output_files = os.listdir(f'{workdir}/out')
-    # for file in output_files:
-    #     extension = os.path.splitext(file)[1]
-    #     if extension == '.log':
-    #         continue
+        if extension == '.blast':
+            blast_fmt = BLAST6Format()
+            shutil.copy(f'{workdir}/out/aligned.blast', f"{str(blast_fmt)}")
+            print(blast_fmt.view(pd.DataFrame))
+            return blast_fmt.view(pd.DataFrame)
         
-    #     if extension == '.fq':
-    #         SequencesWithQuality.format = 'fastq'
+        # TODO handle case where already gzipped
+        if extension == '.fq':
+            fastq_fmt = CasavaOneEightSingleLanePerSampleDirFmt()
+
+            _gzip_file(f'{workdir}/out/aligned.fq', f'{workdir}/out/aligned.fastq.gz')
+            shutil.copy(f'{workdir}/out/aligned.fastq.gz', f"{str(fastq_fmt)}/sample_name_L999_R1_001.fastq.gz")
+
+            print(f"fastq_fmt: {fastq_fmt}")
+            print(f"fastq_fmt manifest: \n{fastq_fmt.manifest}")
+
+            return fastq_fmt
         
+
+def _gzip_file(input_file, output_file):
+    with open(input_file, 'rb') as f_in:
+        with gzip.open(output_file, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
