@@ -65,6 +65,18 @@ run_with_passes_arg: clean
 	--o-aligned-seq "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
 
+test_vsearch:
+	mkdir -p output/outvsearch
+	qiime vsearch dereplicate-sequences \
+	--i-sequences output/qiime-output.qza \
+	--o-dereplicated-table output/outvsearch/dereplicated-table.qza \
+	--o-dereplicated-sequences output/outvsearch/dereplicated-sequences.qza 
+
+test_vsearch_fast:
+	docker run -t -i -v $(pwd):/data quay.io/qiime2/amplicon:2023.9 qiime vsearch fastq-stats \
+	--i-sequences "./output/qiime-output.qza" \
+	--o-visualization "./output/vsearchstats" --verbose
+
 peek: 
 	qiime tools peek ./$(q2smr_output_dir)/qiime-output.qza 
 

@@ -105,7 +105,7 @@ def sort_rna(
         else:
             parameters.append(f'--{arg} {value}')
 
-    if False:
+    if True:
         command_string = f'{command}{command_delimiter}{" ".join(parameters)}'
         try:
             subprocess.run(command_string, shell=True, check=True)
