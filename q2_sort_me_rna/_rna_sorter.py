@@ -12,6 +12,7 @@ import os
 import gzip
 import shutil
 
+from typing import Any
 from q2_types.feature_data import BLAST6Format
 from q2_types.per_sample_sequences import CasavaOneEightSingleLanePerSampleDirFmt
 
@@ -77,7 +78,7 @@ def sort_rna(
             cmd: bool = None,
             task: int = None,
             dbg_level: int = None, # hyphenated
-            ) -> CasavaOneEightSingleLanePerSampleDirFmt:
+            ) -> Any:
 
     if DEBUG:
         arg_value_dict = locals()
@@ -127,7 +128,8 @@ def sort_rna(
             blast_fmt = BLAST6Format()
             shutil.copy(f'{workdir}/out/aligned.blast', f"{str(blast_fmt)}")
             print(blast_fmt.view(pd.DataFrame))
-            return blast_fmt.view(pd.DataFrame)
+            # return blast_fmt.view(pd.DataFrame)
+            return blast_fmt
         
         # TODO handle case where already gzipped
         if extension == '.fq':

@@ -8,9 +8,10 @@
 
 import q2_sort_me_rna
 from qiime2.plugin import Plugin, Str, Bool, Int, Float, Citations
-from q2_sort_me_rna import _rna_sorter as rna_sorter
+from q2_sort_me_rna import _rna_sorter_signatures as rna_sorter
 from q2_types.sample_data import SampleData
 from q2_types.per_sample_sequences import SequencesWithQuality
+from q2_types.feature_data import FeatureData, BLAST6
 
 
 citations = Citations.load('citations.bib', package='q2_sort_me_rna')
@@ -24,10 +25,7 @@ plugin = Plugin(
     short_description='Plugin for calling SortMeRNA.',
 )
 
-plugin.methods.register_function(
-    function=rna_sorter.sort_rna,
-    inputs={},
-    parameters={
+all_sort_me_rna_parameters = {
         'ref': Str,
         'reads': Str,
         'workdir': Str,
@@ -86,8 +84,27 @@ plugin.methods.register_function(
         'cmd': Bool,
         'task': Int,
         'dbg_level': Int
+}
+
+plugin.methods.register_function(
+    function=rna_sorter.sort_rna_blast,
+    inputs={},
+    parameters=all_sort_me_rna_parameters,
+    outputs=[ ('aligned_seq', FeatureData[BLAST6])],
+    input_descriptions={},
+    parameter_descriptions={
     },
-    # outputs=[ ('aligned_seq', FeatureData[BLAST6])],
+    output_descriptions={
+        'aligned_seq': "foobar"
+    },
+    name='Foobar test method',
+    description=('This is a test method that does nothing but print the input')
+)
+
+plugin.methods.register_function(
+    function=rna_sorter.sort_rna_fastx,
+    inputs={},
+    parameters=all_sort_me_rna_parameters,
     outputs=[ ('aligned_seq', SampleData[SequencesWithQuality])],
     input_descriptions={},
     parameter_descriptions={
@@ -99,3 +116,32 @@ plugin.methods.register_function(
     description=('This is a test method that does nothing but print the input')
 )
 
+plugin.methods.register_function(
+    function=rna_sorter.sort_rna_sam,
+    inputs={},
+    parameters=all_sort_me_rna_parameters,
+    outputs=[ ('aligned_seq', SampleData[SequencesWithQuality])],
+    input_descriptions={},
+    parameter_descriptions={
+    },
+    output_descriptions={
+        'aligned_seq': "foobar"
+    },
+    name='Foobar test method',
+    description=('This is a test method that does nothing but print the input')
+)
+
+plugin.methods.register_function(
+    function=rna_sorter.sort_rna_otu_map,
+    inputs={},
+    parameters=all_sort_me_rna_parameters,
+    outputs=[ ('aligned_seq', SampleData[SequencesWithQuality])],
+    input_descriptions={},
+    parameter_descriptions={
+    },
+    output_descriptions={
+        'aligned_seq': "foobar"
+    },
+    name='Foobar test method',
+    description=('This is a test method that does nothing but print the input')
+)
