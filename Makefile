@@ -16,7 +16,7 @@ test:
 	py.test
 #	py.test --cov=q2_emperor #  TODO: see why emp offers this functionality
 
-blast_cache:
+blast_cache: install
 	qiime dev refresh-cache
 
 sortmerna:
@@ -27,7 +27,7 @@ sortmerna:
 
 run: clean 
 	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna-union \
+	qiime sort-me-rna sort-rna\
 	--p-ref "./rrna_references.fasta"  \
 	--p-reads "./synthetic_data.fastq" \
 	--p-workdir "./$(q2smr_output_dir)" \
@@ -36,7 +36,49 @@ run: clean
 
 dev: clean 
 	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna-union \
+	qiime sort-me-rna sort-rna-otu \
+	--p-ref "./rrna_references.fasta"  \
+	--p-reads "./synthetic_data.fastq" \
+	--p-workdir "./$(q2smr_output_dir)" \
+	--p-otu-map true \
+	--p-id 0.12 \
+	--p-coverage 0.12 \
+	--output-dir "./$(q2smr_output_dir)/qiime-output" \
+	--verbose
+
+devblast: clean 
+	mkdir $(q2smr_output_dir)
+	qiime sort-me-rna sort-rna-blast \
+	--p-ref "./rrna_references.fasta"  \
+	--p-reads "./synthetic_data.fastq" \
+	--p-workdir "./$(q2smr_output_dir)" \
+	--o-aligned-seq "./$(q2smr_output_dir)/qiime-output" \
+	--verbose
+
+devfastx: clean 
+	mkdir $(q2smr_output_dir)
+	qiime sort-me-rna sort-rna-fastx \
+	--p-ref "./rrna_references.fasta"  \
+	--p-reads "./synthetic_data.fastq" \
+	--p-workdir "./$(q2smr_output_dir)" \
+	--p-fastx true \
+	--p-sam true \
+	--output-dir "./$(q2smr_output_dir)/qiime-output" \
+	--verbose
+
+devsam: clean 
+	mkdir $(q2smr_output_dir)
+	qiime sort-me-rna sort-rna-sam \
+	--p-ref "./rrna_references.fasta"  \
+	--p-reads "./synthetic_data.fastq" \
+	--p-workdir "./$(q2smr_output_dir)" \
+	--p-sam true \
+	--output-dir "./$(q2smr_output_dir)/qiime-output" \
+	--verbose
+
+test_fastx: clean 
+	mkdir $(q2smr_output_dir)
+	qiime sort-me-rna sort-rna \
 	--p-ref "./rrna_references.fasta"  \
 	--p-reads "./synthetic_data.fastq" \
 	--p-workdir "./$(q2smr_output_dir)" \
@@ -44,9 +86,9 @@ dev: clean
 	--o-aligned-seq "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
 
-run_with_passes_arg: clean 
+test_passes_arg: clean 
 	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna-blas \
+	qiime sort-me-rna sort-rna \
 	--p-ref "./rrna_references.fasta"  \
 	--p-reads "./synthetic_data.fastq" \
 	--p-workdir "./$(q2smr_output_dir)" \

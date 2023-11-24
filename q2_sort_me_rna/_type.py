@@ -9,23 +9,11 @@
 from qiime2.plugin import SemanticType
 
 
-aligned_seq = SemanticType('aligned_seq')
+import qiime2.plugin.model as model
+from q2_types.feature_data import BLAST6Format
 
-# JUNK
-# EchoOutput = SemanticType('EchoOutput')
-# EchoOutputBranch1 = SemanticType('EchoOutputBranch1')
-# EchoOutputBranch2 = SemanticType('EchoOutputBranch2')
-# EchoOutputBranch3 = SemanticType('EchoOutputBranch3')
+class SMROutput(model.DirectoryFormat):
+    forward = model.File(r'aligned.blast', format=BLAST6Format)
 
 
-# SingleInt1 = SemanticType('SingleInt1')
-# SingleInt2 = SemanticType('SingleInt2')
-
-
-# IntWrapper = SemanticType('IntWrapper', field_names='first')
-# _variant = IntWrapper.field['first']
-# WrappedInt1 = SemanticType('WrappedInt1', variant_of=_variant)
-# WrappedInt2 = SemanticType('WrappedInt2', variant_of=_variant)
-
-
-# BasicallyMetadata = SemanticType('BasicallyMetadata')
+SMROutputArtifacts = SemanticType('SMROutputArtifacts')

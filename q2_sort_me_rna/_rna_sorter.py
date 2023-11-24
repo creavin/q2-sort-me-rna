@@ -11,8 +11,9 @@ import pandas as pd
 import os
 import gzip
 import shutil
+from typing import Union
 
-from typing import Any
+from q2_types.feature_data import FeatureData, BLAST6
 from q2_types.feature_data import BLAST6Format
 from q2_types.per_sample_sequences import CasavaOneEightSingleLanePerSampleDirFmt
 
@@ -51,8 +52,8 @@ def sort_rna(
             n: bool = None,
             r: bool = None,
             # [OTU_PICKING]
-            id: int = None,
-            coverage: int = None,
+            id: float = None, # documentation is wrong, must be a float
+            coverage: float = None, # documentation is wrong, must be a float
             de_novo_otu: bool = None,
             otu_map: bool = None,
             # [ADVANCED]
@@ -78,7 +79,7 @@ def sort_rna(
             cmd: bool = None,
             task: int = None,
             dbg_level: int = None, # hyphenated
-            ) -> Any:
+            ) -> Union[(BLAST6Format, CasavaOneEightSingleLanePerSampleDirFmt, pd.DataFrame)]:
 
     if DEBUG:
         arg_value_dict = locals()
@@ -124,13 +125,13 @@ def sort_rna(
         if extension == '.log': # TODO handle log file
             continue
 
-        if extension == '.blast':
+        if file == 'aligned.blast':
             blast_fmt = BLAST6Format()
+            print(blast_fmt)
             shutil.copy(f'{workdir}/out/aligned.blast', f"{str(blast_fmt)}")
             print(blast_fmt.view(pd.DataFrame))
-            # return blast_fmt.view(pd.DataFrame)
             return blast_fmt
-        
+
         # TODO handle case where already gzipped
         if extension == '.fq':
             fastq_fmt = CasavaOneEightSingleLanePerSampleDirFmt()
@@ -142,6 +143,29 @@ def sort_rna(
             print(f"fastq_fmt manifest: \n{fastq_fmt.manifest}")
 
             return fastq_fmt
+
+        # TODO impl correctly
+        if file == 'otu_map.txt':
+            # otu_map_fmt = FeatureData[BLAST6]()
+            # shutil.copy(f'{workdir}/out/otu_map.txt', f"{str(otu_map_fmt)}")
+
+            # print(f"otu_map_fmt: {otu_map_fmt}")
+            # print(f"otu_map_fmt view: \n{otu_map_fmt.view(pd.DataFrame)}")
+            # return otu_map_fmt
+            df = pd.read_table(f'{workdir}/out/otu_map.txt', sep='\t', header=None)
+            return df
+
+
+        # TODO: No SAMfmt. This is a dummy impl
+        if extension == '.sam':
+            sam_fmt = CasavaOneEightSingleLanePerSampleDirFmt()
+
+            shutil.copy(f'{workdir}/out/aligned.sam', f"{str(sam_fmt)}/sample_name_L999_R1_001.sam")
+
+            print(f"sam_fmt: {sam_fmt}")
+            print(f"sam_fmt manifest: \n{sam_fmt.manifest}")
+
+            return sam_fmt
         
 
 def _gzip_file(input_file, output_file):

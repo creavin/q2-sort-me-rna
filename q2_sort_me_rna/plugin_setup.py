@@ -13,6 +13,7 @@ from q2_types.sample_data import SampleData
 from q2_types.per_sample_sequences import SequencesWithQuality
 from q2_types.feature_data import FeatureData, BLAST6
 
+from q2_types.feature_data import Sequence
 
 citations = Citations.load('citations.bib', package='q2_sort_me_rna')
 
@@ -57,8 +58,8 @@ all_sort_me_rna_parameters = {
         'n': Bool,
         'r': Bool,
         # [OTU_PICKING]
-        'id': Int,
-        'coverage': Int,
+        'id': Float, # documentation is wrong, must be a float
+        'coverage': Float, # documentation is wrong, must be a float
         'de_novo_otu': Bool,
         'otu_map': Bool,
          # [ADVANCED]
@@ -90,7 +91,7 @@ plugin.methods.register_function(
     function=rna_sorter.sort_rna_blast,
     inputs={},
     parameters=all_sort_me_rna_parameters,
-    outputs=[ ('aligned_seq', FeatureData[BLAST6])],
+    outputs=[ ('aligned_seq', FeatureData[BLAST6]), ],
     input_descriptions={},
     parameter_descriptions={
     },
@@ -132,10 +133,10 @@ plugin.methods.register_function(
 )
 
 plugin.methods.register_function(
-    function=rna_sorter.sort_rna_otu_map,
+    function=rna_sorter.sort_rna_otu,
     inputs={},
     parameters=all_sort_me_rna_parameters,
-    outputs=[ ('aligned_seq', SampleData[SequencesWithQuality])],
+    outputs=[ ('aligned_seq',FeatureData[Sequence])],
     input_descriptions={},
     parameter_descriptions={
     },
@@ -145,3 +146,17 @@ plugin.methods.register_function(
     name='Foobar test method',
     description=('This is a test method that does nothing but print the input')
 )
+
+
+# Attempt to group return values
+# from ._type import SMROutput, SMROutputArtifacts
+# from q2_types.feature_data import BLAST6Format
+
+
+# plugin.register_formats(SMROutput)
+# plugin.register_semantic_types(SMROutputArtifacts)
+
+# plugin.register_semantic_type_to_format(SMROutputArtifacts,
+#                                         artifact_format=SMROutput)
+
+
