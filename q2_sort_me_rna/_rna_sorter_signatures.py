@@ -1,14 +1,9 @@
-
-import subprocess
 import pandas as pd
-import os
-import gzip
-import shutil
-from typing import Union
 
-from q2_types.feature_data import FeatureData, BLAST6
 from q2_types.feature_data import BLAST6Format
 from q2_types.per_sample_sequences import CasavaOneEightSingleLanePerSampleDirFmt
+
+from q2_types_genomics.per_sample_data import SAMDirFmt
 
 from q2_sort_me_rna._rna_sorter import sort_rna
 
@@ -201,7 +196,7 @@ def sort_rna_sam(
             cmd: bool = None,
             task: int = None,
             dbg_level: int = None, 
-            ) -> CasavaOneEightSingleLanePerSampleDirFmt:
+            ) -> SAMDirFmt:
 
     arg_value_dict = locals()
     return sort_rna(**arg_value_dict)

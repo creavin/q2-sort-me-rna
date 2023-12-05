@@ -6,16 +6,15 @@
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import q2_sort_me_rna
 from qiime2.plugin import Plugin, Str, Bool, Int, Float, Citations
-from q2_sort_me_rna import _rna_sorter_signatures as rna_sorter
 from q2_types.sample_data import SampleData
 from q2_types.per_sample_sequences import SequencesWithQuality
-from q2_types.feature_data import FeatureData, BLAST6
+from q2_types.feature_data import  BLAST6, FeatureData, Sequence
+from q2_types_genomics.per_sample_data import SequenceAlignmentMap
 
-from q2_types.feature_data import Sequence
+import q2_sort_me_rna
+from q2_sort_me_rna import _rna_sorter_signatures as rna_sorter
 
-citations = Citations.load('citations.bib', package='q2_sort_me_rna')
 
 plugin = Plugin(
     name='sort-me-rna',
@@ -25,6 +24,9 @@ plugin = Plugin(
     description=('Plugin for calling SortMeRNA.'),  # TODO expand
     short_description='Plugin for calling SortMeRNA.',
 )
+
+
+citations = Citations.load('citations.bib', package='q2_sort_me_rna')
 
 all_sort_me_rna_parameters = {
         'ref': Str,
@@ -91,7 +93,7 @@ plugin.methods.register_function(
     function=rna_sorter.sort_rna_blast,
     inputs={},
     parameters=all_sort_me_rna_parameters,
-    outputs=[ ('aligned_seq', FeatureData[BLAST6]), ],
+    outputs=[ ('aligned_seq', FeatureData[BLAST6])],
     input_descriptions={},
     parameter_descriptions={
     },
@@ -121,7 +123,7 @@ plugin.methods.register_function(
     function=rna_sorter.sort_rna_sam,
     inputs={},
     parameters=all_sort_me_rna_parameters,
-    outputs=[ ('aligned_seq', SampleData[SequencesWithQuality])],
+    outputs=[ ('aligned_seq', SampleData[SequenceAlignmentMap])],
     input_descriptions={},
     parameter_descriptions={
     },
@@ -146,17 +148,4 @@ plugin.methods.register_function(
     name='Foobar test method',
     description=('This is a test method that does nothing but print the input')
 )
-
-
-# Attempt to group return values
-# from ._type import SMROutput, SMROutputArtifacts
-# from q2_types.feature_data import BLAST6Format
-
-
-# plugin.register_formats(SMROutput)
-# plugin.register_semantic_types(SMROutputArtifacts)
-
-# plugin.register_semantic_type_to_format(SMROutputArtifacts,
-#                                         artifact_format=SMROutput)
-
 

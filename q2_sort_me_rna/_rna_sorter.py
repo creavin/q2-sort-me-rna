@@ -13,9 +13,10 @@ import gzip
 import shutil
 from typing import Union
 
-from q2_types.feature_data import FeatureData, BLAST6
 from q2_types.feature_data import BLAST6Format
 from q2_types.per_sample_sequences import CasavaOneEightSingleLanePerSampleDirFmt
+
+from q2_types_genomics.per_sample_data import SAMDirFmt
 
 DEBUG = True
 
@@ -79,7 +80,7 @@ def sort_rna(
             cmd: bool = None,
             task: int = None,
             dbg_level: int = None, # hyphenated
-            ) -> Union[(BLAST6Format, CasavaOneEightSingleLanePerSampleDirFmt, pd.DataFrame)]:
+            ) -> Union[(BLAST6Format, CasavaOneEightSingleLanePerSampleDirFmt, SAMDirFmt, pd.DataFrame)]:
 
     if DEBUG:
         arg_value_dict = locals()
@@ -158,12 +159,8 @@ def sort_rna(
 
         # TODO: No SAMfmt. This is a dummy impl
         if extension == '.sam':
-            sam_fmt = CasavaOneEightSingleLanePerSampleDirFmt()
-
-            shutil.copy(f'{workdir}/out/aligned.sam', f"{str(sam_fmt)}/sample_name_L999_R1_001.sam")
-
-            print(f"sam_fmt: {sam_fmt}")
-            print(f"sam_fmt manifest: \n{sam_fmt.manifest}")
+            sam_fmt = SAMDirFmt()
+            shutil.copy(f'{workdir}/out/aligned.sam', f"{str(sam_fmt)}")
 
             return sam_fmt
         
