@@ -76,6 +76,18 @@ devsam: clean
 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
 
+devotu: clean 
+	mkdir $(q2smr_output_dir)
+	qiime sort-me-rna sort-rna-otu \
+	--p-ref "./rrna_references.fasta"  \
+	--p-reads "./synthetic_data.fastq" \
+	--p-workdir "./$(q2smr_output_dir)" \
+	--p-otu-map true \
+	--p-id 0.12 \
+	--p-coverage 0.12 \
+	--output-dir "./$(q2smr_output_dir)/qiime-output" \
+	--verbose
+
 test_fastx: clean 
 	mkdir $(q2smr_output_dir)
 	qiime sort-me-rna sort-rna \

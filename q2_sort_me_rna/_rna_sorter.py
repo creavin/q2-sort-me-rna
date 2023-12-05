@@ -145,19 +145,17 @@ def sort_rna(
 
             return fastq_fmt
 
-        # TODO impl correctly
         if file == 'otu_map.txt':
-            # otu_map_fmt = FeatureData[BLAST6]()
-            # shutil.copy(f'{workdir}/out/otu_map.txt', f"{str(otu_map_fmt)}")
+            input_file = f'{workdir}/out/otu_map.txt'
+            output_file = f'{workdir}/out/processed_otu_map.txt'
 
-            # print(f"otu_map_fmt: {otu_map_fmt}")
-            # print(f"otu_map_fmt view: \n{otu_map_fmt.view(pd.DataFrame)}")
-            # return otu_map_fmt
-            df = pd.read_table(f'{workdir}/out/otu_map.txt', sep='\t', header=None)
+            awk_command = f"awk -F'\t' '{{print $1, NF-1}}' {input_file} > {output_file}"
+            subprocess.run(awk_command, shell=True)
+            df = pd.read_csv(output_file, sep=' ', header=None, names=['Ref Sequence', 'Count'], index_col='Ref Sequence')
+
             return df
 
 
-        # TODO: No SAMfmt. This is a dummy impl
         if extension == '.sam':
             sam_fmt = SAMDirFmt()
             shutil.copy(f'{workdir}/out/aligned.sam', f"{str(sam_fmt)}")

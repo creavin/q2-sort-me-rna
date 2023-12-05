@@ -9,7 +9,8 @@
 from qiime2.plugin import Plugin, Str, Bool, Int, Float, Citations
 from q2_types.sample_data import SampleData
 from q2_types.per_sample_sequences import SequencesWithQuality
-from q2_types.feature_data import  BLAST6, FeatureData, Sequence
+from q2_types.feature_data import  BLAST6, FeatureData
+from q2_types.feature_table import FeatureTable, Frequency
 from q2_types_genomics.per_sample_data import SequenceAlignmentMap
 
 import q2_sort_me_rna
@@ -138,7 +139,7 @@ plugin.methods.register_function(
     function=rna_sorter.sort_rna_otu,
     inputs={},
     parameters=all_sort_me_rna_parameters,
-    outputs=[ ('aligned_seq',FeatureData[Sequence])],
+    outputs=[ ('aligned_seq',FeatureTable[Frequency])],
     input_descriptions={},
     parameter_descriptions={
     },
