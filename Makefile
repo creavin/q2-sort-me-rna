@@ -46,6 +46,15 @@ dev: clean
 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
 
+devall: clean 
+	mkdir $(q2smr_output_dir)
+	qiime sort-me-rna sort-rna \
+	--p-ref "./rrna_references.fasta"  \
+	--p-reads "./synthetic_data.fastq" \
+	--p-workdir "./$(q2smr_output_dir)" \
+	--output-dir "./$(q2smr_output_dir)/qiime-output" \
+	--verbose
+
 devblast: clean 
 	mkdir $(q2smr_output_dir)
 	qiime sort-me-rna sort-rna-blast \
@@ -85,6 +94,19 @@ devotu: clean
 	--p-otu-map true \
 	--p-id 0.12 \
 	--p-coverage 0.12 \
+	--output-dir "./$(q2smr_output_dir)/qiime-output" \
+	--verbose
+
+devotudenovo: clean 
+	mkdir $(q2smr_output_dir)
+	qiime sort-me-rna sort-rna-otu \
+	--p-ref "./rrna_references.fasta"  \
+	--p-reads "./synthetic_data.fastq" \
+	--p-workdir "./$(q2smr_output_dir)" \
+	--p-otu-map true \
+	--p-id 0.12 \
+	--p-coverage 0.12 \
+	--p-de-novo-otu true \
 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
 

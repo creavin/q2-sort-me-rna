@@ -15,6 +15,7 @@ from q2_types_genomics.per_sample_data import SequenceAlignmentMap
 
 import q2_sort_me_rna
 from q2_sort_me_rna import _rna_sorter_signatures as rna_sorter
+from q2_sort_me_rna import _rna_sorter as true_rna_sorter
 
 
 plugin = Plugin(
@@ -89,6 +90,26 @@ all_sort_me_rna_parameters = {
         'task': Int,
         'dbg_level': Int
 }
+
+plugin.methods.register_function(
+    function=true_rna_sorter.sort_rna,
+    inputs={},
+    parameters=all_sort_me_rna_parameters,
+    outputs=[ 
+        ('blast_aligned_seq', FeatureData[BLAST6]),
+        ('fastx_aligned_seq', SampleData[SequencesWithQuality]),
+        ('sam_aligned_seq', SampleData[SequenceAlignmentMap]),
+        ('otu_mapping', FeatureTable[Frequency]),
+        # ('', FeatureData[BLAST6]),
+        ],
+    input_descriptions={},
+    parameter_descriptions={
+    },
+    output_descriptions={
+    },
+    name='Foobar test method',
+    description=('This is a test method that does nothing but print the input')
+)
 
 plugin.methods.register_function(
     function=rna_sorter.sort_rna_blast,

@@ -80,11 +80,13 @@ def sort_rna(
             cmd: bool = None,
             task: int = None,
             dbg_level: int = None, # hyphenated
-            ) -> Union[(BLAST6Format, CasavaOneEightSingleLanePerSampleDirFmt, SAMDirFmt, pd.DataFrame)]:
+            # ) -> Union[(BLAST6Format, CasavaOneEightSingleLanePerSampleDirFmt, SAMDirFmt, pd.DataFrame)]:
+            ) -> (BLAST6Format, CasavaOneEightSingleLanePerSampleDirFmt, SAMDirFmt, pd.DataFrame):
 
     if DEBUG:
         arg_value_dict = locals()
         print(locals())
+
 
     command = 'sortmerna'
     command_delimiter = ' '
@@ -92,8 +94,13 @@ def sort_rna(
 
     uppercase_args = ['sq', 'f', 'n', 'r', 'l']
     hyphenated_args = ['idx_dir', 'no_best', 'zip_out', 'dbg_level']
+    hard_coded_args = ['blast', 'fastx', 'sam', 'otu_map'] # force to true
+    hard_coded_args = [] # force to true
 
     for arg in arg_value_dict:
+        if arg in hard_coded_args:
+            arg_value_dict[arg] = 1
+
         if not (value := arg_value_dict[arg]) or arg == "arg_value_dict":
             continue
 
@@ -121,6 +128,15 @@ def sort_rna(
 
     # Handle Output
     output_files = os.listdir(f'{workdir}/out')
+
+
+    # it's possible for no sequence to qualify for OTU mapping
+    otu_mapping = pd.DataFrame(columns=['Ref Sequence', 'Count'])
+    otu_mapping.reset_index(inplace=True)
+    otu_mapping['Ref Sequence'] = otu_mapping['Ref Sequence'].astype(str)
+    otu_mapping.set_index('Ref Sequence', inplace=True)
+    print("Inferred type", otu_mapping.index.inferred_type)
+
     for file in output_files:
         extension = os.path.splitext(file)[1]
         if extension == '.log': # TODO handle log file
@@ -131,7 +147,8 @@ def sort_rna(
             print(blast_fmt)
             shutil.copy(f'{workdir}/out/aligned.blast', f"{str(blast_fmt)}")
             print(blast_fmt.view(pd.DataFrame))
-            return blast_fmt
+            # return blast_fmt
+            blast_aligned_seq = blast_fmt
 
         # TODO handle case where already gzipped
         if extension == '.fq':
@@ -143,7 +160,14 @@ def sort_rna(
             print(f"fastq_fmt: {fastq_fmt}")
             print(f"fastq_fmt manifest: \n{fastq_fmt.manifest}")
 
-            return fastq_fmt
+            fastx_aligned_seq = fastq_fmt  
+            # return fastq_fmt
+
+        if extension == '.sam':
+            sam_fmt = SAMDirFmt()
+            shutil.copy(f'{workdir}/out/aligned.sam', f"{str(sam_fmt)}")
+
+            sam_aligned_seq = sam_fmt
 
         if file == 'otu_map.txt':
             input_file = f'{workdir}/out/otu_map.txt'
@@ -153,15 +177,9 @@ def sort_rna(
             subprocess.run(awk_command, shell=True)
             df = pd.read_csv(output_file, sep=' ', header=None, names=['Ref Sequence', 'Count'], index_col='Ref Sequence')
 
-            return df
-
-
-        if extension == '.sam':
-            sam_fmt = SAMDirFmt()
-            shutil.copy(f'{workdir}/out/aligned.sam', f"{str(sam_fmt)}")
-
-            return sam_fmt
+            otu_mapping = df
         
+    return blast_aligned_seq, fastx_aligned_seq, sam_aligned_seq, otu_mapping
 
 def _gzip_file(input_file, output_file):
     with open(input_file, 'rb') as f_in:
