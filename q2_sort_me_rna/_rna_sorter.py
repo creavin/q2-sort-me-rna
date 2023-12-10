@@ -80,8 +80,7 @@ def sort_rna(
             cmd: bool = None,
             task: int = None,
             dbg_level: int = None, # hyphenated
-            # ) -> Union[(BLAST6Format, CasavaOneEightSingleLanePerSampleDirFmt, SAMDirFmt, pd.DataFrame)]:
-            ) -> (BLAST6Format, CasavaOneEightSingleLanePerSampleDirFmt, SAMDirFmt, pd.DataFrame):
+            ):
 
     if DEBUG:
         arg_value_dict = locals()
@@ -94,8 +93,8 @@ def sort_rna(
 
     uppercase_args = ['sq', 'f', 'n', 'r', 'l']
     hyphenated_args = ['idx_dir', 'no_best', 'zip_out', 'dbg_level']
-    hard_coded_args = ['blast', 'fastx', 'sam', 'otu_map'] # force to true
-    hard_coded_args = [] # force to true
+    hard_coded_args = ['blast', 'fastx', 'sam'] # 'otu_map']  # force to true
+    # hard_coded_args = [] # force to true
 
     for arg in arg_value_dict:
         if arg in hard_coded_args:
@@ -131,11 +130,13 @@ def sort_rna(
 
 
     # it's possible for no sequence to qualify for OTU mapping
-    otu_mapping = pd.DataFrame(columns=['Ref Sequence', 'Count'])
-    otu_mapping.reset_index(inplace=True)
-    otu_mapping['Ref Sequence'] = otu_mapping['Ref Sequence'].astype(str)
-    otu_mapping.set_index('Ref Sequence', inplace=True)
-    print("Inferred type", otu_mapping.index.inferred_type)
+    # otu_mapping = pd.DataFrame(columns=['Ref Sequence', 'Count'])
+    # otu_mapping.reset_index(inplace=True)
+    # otu_mapping['Ref Sequence'] = otu_mapping['Ref Sequence'].astype(str)
+    # otu_mapping.set_index('Ref Sequence', inplace=True)
+    # print("Inferred type", otu_mapping.index.inferred_type)
+
+
 
     for file in output_files:
         extension = os.path.splitext(file)[1]
@@ -179,7 +180,10 @@ def sort_rna(
 
             otu_mapping = df
         
-    return blast_aligned_seq, fastx_aligned_seq, sam_aligned_seq, otu_mapping
+    if 'otu_mapping' in locals() and otu_mapping is not None:
+        return blast_aligned_seq, fastx_aligned_seq, sam_aligned_seq, otu_mapping
+    else:
+        return blast_aligned_seq, fastx_aligned_seq, sam_aligned_seq# otu_mapping
 
 def _gzip_file(input_file, output_file):
     with open(input_file, 'rb') as f_in:

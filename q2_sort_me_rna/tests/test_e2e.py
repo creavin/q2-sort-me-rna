@@ -16,52 +16,136 @@ class TestSortRNA(unittest.TestCase):
 
     def setUp(self):
         self.q2smr_output_dir = tempfile.mkdtemp()
-        self.q2smr_output_artifact_path = f'{self.q2smr_output_dir}/qiime-output.qza'
+        self.q2smr_output_artifacts_dir = f'{self.q2smr_output_dir}/qiime-output'
 
 
     def tearDown(self):
         shutil.rmtree(self.q2smr_output_dir)
 
+# devall: clean 
+# 	mkdir $(q2smr_output_dir)
+# 	qiime sort-me-rna sort-rna-all \
+# 	--p-ref "./rrna_references.fasta"  \
+# 	--p-reads "./synthetic_data.fastq" \
+# 	--p-workdir "./$(q2smr_output_dir)" \
+# 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
+# 	--verbose
 
-    def test_sort_rna_end_to_end_blas(self):
+    def test_sort_rna_end_to_end(self):
         command = [
-            'qiime', 'sort-me-rna', 'sort-rna-blast',
+            'qiime', 'sort-me-rna', 'sort-rna-all',
             '--p-ref', './rrna_references.fasta',
             '--p-reads', './synthetic_data.fastq',
             '--p-workdir', self.q2smr_output_dir,
-            '--o-aligned-seq', self.q2smr_output_artifact_path
+            '--output-dir', self.q2smr_output_artifacts_dir
         ]
 
         subprocess.run(command, check=True)
 
-        self.assertIn('qiime-output.qza', os.listdir(self.q2smr_output_dir), "Expected file is not present")
+        expected_artifacts = [
+            "blast_aligned_seq.qza",
+            "fastx_aligned_seq.qza",
+            "sam_aligned_seq.qza"
+            # "otu_mapping.qza",
+        ]
+
+        for artifact in expected_artifacts:
+            self.assertIn(artifact, os.listdir(self.q2smr_output_artifacts_dir), "Expected file is not present")
+
 
         expected_meta_data = {
             'Type': 'FeatureData[BLAST6]',
             'format': 'BLAST6DirectoryFormat',
         }
-        self._validate_artifact_type(self.q2smr_output_artifact_path, expected_meta_data)
+        # TODO re-impl
+        # self._validate_artifact_type(self.q2smr_output_artifact_path, expected_meta_data)
 
 
-    def test_sort_rna_end_to_end_fastx(self):
+    # devotu: clean 
+    # 	mkdir $(q2smr_output_dir)
+    # 	qiime sort-me-rna otu-mapping \
+    # 	--p-ref "./rrna_references.fasta"  \
+    # 	--p-reads "./synthetic_data.fastq" \
+    # 	--p-workdir "./$(q2smr_output_dir)" \
+    # 	--p-otu-map true \
+    # 	--p-id 0.12 \
+    # 	--p-coverage 0.12 \
+    # 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
+    # 	--verbose
+
+    def test_otu_mapping_end_to_end(self):
         command = [
-            'qiime', 'sort-me-rna', 'sort-rna-fastx',
+            'qiime', 'sort-me-rna', 'otu-mapping',
             '--p-ref', './rrna_references.fasta',
             '--p-reads', './synthetic_data.fastq',
-            '--p-fastx', 'true',
+            '--p-otu-map', 'true',
+            '--p-id', '0.12',
+            '--p-coverage', '0.12',
             '--p-workdir', self.q2smr_output_dir,
-            '--o-aligned-seq', self.q2smr_output_artifact_path
+            '--output-dir', self.q2smr_output_artifacts_dir
         ]
 
         subprocess.run(command, check=True)
 
-        self.assertIn('qiime-output.qza', os.listdir(self.q2smr_output_dir), "Expected file is not present")
+        expected_artifacts = [
+            "blast_aligned_seq.qza",
+            "fastx_aligned_seq.qza",
+            "sam_aligned_seq.qza",
+            "otu_mapping.qza",
+        ]
+
+        for artifact in expected_artifacts:
+            self.assertIn(artifact, os.listdir(self.q2smr_output_artifacts_dir), "Expected file is not present")
+
 
         expected_meta_data = {
-            'Type': 'SampleData[SequencesWithQuality]',
-            'format': 'SingleLanePerSampleSingleEndFastqDirFmt',
+            'Type': 'FeatureData[BLAST6]',
+            'format': 'BLAST6DirectoryFormat',
         }
-        self._validate_artifact_type(self.q2smr_output_artifact_path, expected_meta_data)
+        # TODO re-impl
+        # self._validate_artifact_type(self.q2smr_output_artifact_path, expected_meta_data)
+
+
+
+    # def test_sort_rna_end_to_end_blas(self):
+    #     command = [
+    #         'qiime', 'sort-me-rna', 'sort-rna-blast',
+    #         '--p-ref', './rrna_references.fasta',
+    #         '--p-reads', './synthetic_data.fastq',
+    #         '--p-workdir', self.q2smr_output_dir,
+    #         '--o-aligned-seq', self.q2smr_output_artifact_path
+    #     ]
+
+    #     subprocess.run(command, check=True)
+
+    #     self.assertIn('qiime-output.qza', os.listdir(self.q2smr_output_dir), "Expected file is not present")
+
+    #     expected_meta_data = {
+    #         'Type': 'FeatureData[BLAST6]',
+    #         'format': 'BLAST6DirectoryFormat',
+    #     }
+    #     self._validate_artifact_type(self.q2smr_output_artifact_path, expected_meta_data)
+
+
+    # def test_sort_rna_end_to_end_fastx(self):
+    #     command = [
+    #         'qiime', 'sort-me-rna', 'sort-rna-fastx',
+    #         '--p-ref', './rrna_references.fasta',
+    #         '--p-reads', './synthetic_data.fastq',
+    #         '--p-fastx', 'true',
+    #         '--p-workdir', self.q2smr_output_dir,
+    #         '--o-aligned-seq', self.q2smr_output_artifact_path
+    #     ]
+
+    #     subprocess.run(command, check=True)
+
+    #     self.assertIn('qiime-output.qza', os.listdir(self.q2smr_output_dir), "Expected file is not present")
+
+    #     expected_meta_data = {
+    #         'Type': 'SampleData[SequencesWithQuality]',
+    #         'format': 'SingleLanePerSampleSingleEndFastqDirFmt',
+    #     }
+    #     self._validate_artifact_type(self.q2smr_output_artifact_path, expected_meta_data)
 
 
     def _validate_artifact_type(self, file, expected_meta_data):

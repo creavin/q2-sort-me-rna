@@ -35,23 +35,26 @@ run: clean
 	--verbose
 
 dev: clean 
+
+
+devall: clean 
 	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna-otu \
+	qiime sort-me-rna sort-rna-all \
+	--p-ref "./rrna_references.fasta"  \
+	--p-reads "./synthetic_data.fastq" \
+	--p-workdir "./$(q2smr_output_dir)" \
+	--output-dir "./$(q2smr_output_dir)/qiime-output" \
+	--verbose
+
+devotu: clean 
+	mkdir $(q2smr_output_dir)
+	qiime sort-me-rna otu-mapping \
 	--p-ref "./rrna_references.fasta"  \
 	--p-reads "./synthetic_data.fastq" \
 	--p-workdir "./$(q2smr_output_dir)" \
 	--p-otu-map true \
 	--p-id 0.12 \
 	--p-coverage 0.12 \
-	--output-dir "./$(q2smr_output_dir)/qiime-output" \
-	--verbose
-
-devall: clean 
-	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna \
-	--p-ref "./rrna_references.fasta"  \
-	--p-reads "./synthetic_data.fastq" \
-	--p-workdir "./$(q2smr_output_dir)" \
 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
 
@@ -82,18 +85,6 @@ devsam: clean
 	--p-reads "./synthetic_data.fastq" \
 	--p-workdir "./$(q2smr_output_dir)" \
 	--p-sam true \
-	--output-dir "./$(q2smr_output_dir)/qiime-output" \
-	--verbose
-
-devotu: clean 
-	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna-otu \
-	--p-ref "./rrna_references.fasta"  \
-	--p-reads "./synthetic_data.fastq" \
-	--p-workdir "./$(q2smr_output_dir)" \
-	--p-otu-map true \
-	--p-id 0.12 \
-	--p-coverage 0.12 \
 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
 
