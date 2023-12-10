@@ -9,12 +9,11 @@ clean:
 	rm -rdf output
 
 lint:
-	q2lint
 	flake8
+	q2lint
 
 test:
-	py.test
-#	py.test --cov=q2_emperor #  TODO: see why emp offers this functionality
+	py.test 
 
 blast_cache: install
 	qiime dev refresh-cache
@@ -24,18 +23,6 @@ sortmerna:
 	sortmerna --ref ./rrna_references.fasta \
 	--reads ./synthetic_data.fastq \
 	--workdir $(sortmerna_work_dir)
-
-run: clean 
-	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna\
-	--p-ref "./rrna_references.fasta"  \
-	--p-reads "./synthetic_data.fastq" \
-	--p-workdir "./$(q2smr_output_dir)" \
-	--o-aligned-seq "./$(q2smr_output_dir)/qiime-output" \
-	--verbose
-
-dev: clean 
-
 
 devall: clean 
 	mkdir $(q2smr_output_dir)
@@ -58,36 +45,6 @@ devotu: clean
 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
 
-devblast: clean 
-	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna-blast \
-	--p-ref "./rrna_references.fasta"  \
-	--p-reads "./synthetic_data.fastq" \
-	--p-workdir "./$(q2smr_output_dir)" \
-	--o-aligned-seq "./$(q2smr_output_dir)/qiime-output" \
-	--verbose
-
-devfastx: clean 
-	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna-fastx \
-	--p-ref "./rrna_references.fasta"  \
-	--p-reads "./synthetic_data.fastq" \
-	--p-workdir "./$(q2smr_output_dir)" \
-	--p-fastx true \
-	--p-sam true \
-	--output-dir "./$(q2smr_output_dir)/qiime-output" \
-	--verbose
-
-devsam: clean 
-	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna-sam \
-	--p-ref "./rrna_references.fasta"  \
-	--p-reads "./synthetic_data.fastq" \
-	--p-workdir "./$(q2smr_output_dir)" \
-	--p-sam true \
-	--output-dir "./$(q2smr_output_dir)/qiime-output" \
-	--verbose
-
 devotudenovo: clean 
 	mkdir $(q2smr_output_dir)
 	qiime sort-me-rna sort-rna-otu \
@@ -99,16 +56,6 @@ devotudenovo: clean
 	--p-coverage 0.12 \
 	--p-de-novo-otu true \
 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
-	--verbose
-
-test_fastx: clean 
-	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna \
-	--p-ref "./rrna_references.fasta"  \
-	--p-reads "./synthetic_data.fastq" \
-	--p-workdir "./$(q2smr_output_dir)" \
-	--p-fastx true \
-	--o-aligned-seq "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
 
 test_passes_arg: clean 
@@ -132,8 +79,3 @@ test_vsearch_fast:
 	docker run -t -i -v $(pwd):/data quay.io/qiime2/amplicon:2023.9 qiime vsearch fastq-stats \
 	--i-sequences "./output/qiime-output.qza" \
 	--o-visualization "./output/vsearchstats" --verbose
-
-peek: 
-	qiime tools peek ./$(q2smr_output_dir)/qiime-output.qza 
-
-full: install clean blast_cache test run peek
