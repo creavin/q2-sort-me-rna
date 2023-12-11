@@ -26,7 +26,7 @@ sortmerna:
 
 dev: clean 
 	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna-all \
+	qiime sort-me-rna sort-rna \
 	--p-ref "./rrna_references.fasta"  \
 	--p-reads "./synthetic_data.fastq.gz" \
 	--p-workdir "./$(q2smr_output_dir)" \
@@ -36,7 +36,7 @@ dev: clean
 
 devall: clean 
 	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna-all \
+	qiime sort-me-rna sort-rna \
 	--p-ref "./rrna_references.fasta"  \
 	--p-reads "./synthetic_data.fastq" \
 	--p-workdir "./$(q2smr_output_dir)" \

@@ -90,7 +90,7 @@ all_sort_me_rna_parameters = {
 }
 
 plugin.methods.register_function(
-    function=rna_sorter.sort_rna_all,
+    function=rna_sorter.sort_rna,
     inputs={},
     parameters=all_sort_me_rna_parameters,
     outputs=[

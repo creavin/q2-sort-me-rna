@@ -5,10 +5,10 @@ from q2_types_genomics.per_sample_data import SAMDirFmt
 from q2_types.per_sample_sequences \
     import CasavaOneEightSingleLanePerSampleDirFmt
 
-from q2_sort_me_rna._rna_sorter import sort_rna
+from q2_sort_me_rna._rna_sorter import sort_rna as align
 
 
-def sort_rna_all(
+def sort_rna(
     ref: str,
     reads: str,
     workdir: str = 'out',
@@ -64,7 +64,7 @@ def sort_rna_all(
     dbg_level: int = None) \
         -> (BLAST6Format, CasavaOneEightSingleLanePerSampleDirFmt, SAMDirFmt):
     arg_value_dict = locals()
-    return sort_rna(**arg_value_dict)
+    return align(**arg_value_dict)
 
 
 def otu_mapping(

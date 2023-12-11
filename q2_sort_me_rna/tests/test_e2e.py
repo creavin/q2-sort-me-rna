@@ -29,7 +29,7 @@ class TestSortRNA(unittest.TestCase):
 
     def test_sort_rna_end_to_end(self):
         command = [
-            'qiime', 'sort-me-rna', 'sort-rna-all',
+            'qiime', 'sort-me-rna', 'sort-rna',
             '--p-ref', f'{self.q2smr_input_dir}/rrna_references.fasta',
             '--p-reads', f'{self.q2smr_input_dir}/synthetic_data.fastq',
             '--p-workdir', self.q2smr_output_dir,
