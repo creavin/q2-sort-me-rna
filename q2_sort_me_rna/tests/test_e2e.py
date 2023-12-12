@@ -71,7 +71,6 @@ class TestSortRNA(unittest.TestCase):
             'qiime', 'sort-me-rna', 'otu-mapping',
             '--p-ref', f'{self.q2smr_input_dir}/rrna_references.fasta',
             '--p-reads', f'{self.q2smr_input_dir}/synthetic_data.fastq',
-            '--p-otu-map', 'true',
             '--p-id', '0.12',
             '--p-coverage', '0.12',
             '--p-workdir', self.q2smr_output_dir,

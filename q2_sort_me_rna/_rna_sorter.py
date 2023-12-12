@@ -99,31 +99,34 @@ def sort_rna(
         if extension == '.blast':
             blast_aligned_seq = _construct_blast_fmt(smr_output_dir, smr_file)
         elif _is_fastx_(extension):
-            fastx_aligned_seq = _construct_fastx_fmt(smr_output_dir, smr_file)
+            if _is_denovo_otu(smr_file):
+                denovo_otu_aligned_seq = \
+                    _construct_fastx_fmt(smr_output_dir, smr_file)
+            else:
+                fastx_aligned_seq = \
+                    _construct_fastx_fmt(smr_output_dir, smr_file)
         elif extension == '.sam':
             sam_aligned_seq = _construct_sam_fmt(smr_output_dir, smr_file)
         elif smr_file == 'otu_map.txt':
             otu_mapping = _construct_otu_mapping(smr_output_dir, smr_file)
 
+    result = [blast_aligned_seq, fastx_aligned_seq, sam_aligned_seq]
     if 'otu_mapping' in locals():
-        return blast_aligned_seq, fastx_aligned_seq, \
-            sam_aligned_seq, otu_mapping
-    else:
-        return blast_aligned_seq, fastx_aligned_seq, sam_aligned_seq
+        result.append(otu_mapping)
+ 
+        if 'denovo_otu_aligned_seq' in locals():
+            result.append(denovo_otu_aligned_seq)
+
+    return tuple(result)
 
 
 def _parse_parameters(arg_value_dict):
     uppercase_args = ['sq', 'f', 'n', 'r', 'l']
     hyphenated_args = ['idx_dir', 'no_best', 'zip_out', 'dbg_level']
-    hard_coded_args = ['blast', 'fastx', 'sam']
     parameters = []
 
     # Assumption that the transformations are mutually exclusive
     for arg in arg_value_dict:
-        # Always set to true so all alignment types are produced
-        if arg in hard_coded_args:
-            arg_value_dict[arg] = 1
-
         if not (value := arg_value_dict[arg]) or arg == "arg_value_dict":
             continue
         elif arg in hyphenated_args:
@@ -221,6 +224,10 @@ def _un_gzip_file(gzip_file_path, output_file_path):
 
 def _is_gun_zipped(file):
     return os.path.splitext(file)[1] == '.gz'
+
+
+def _is_denovo_otu(file):
+    return "_denovo." in file
 
 
 def _is_fastx_(extension):

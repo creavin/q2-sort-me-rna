@@ -57,7 +57,7 @@ devotu: clean
 
 devotudenovo: clean 
 	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna-otu \
+	qiime sort-me-rna -rna-otu \
 	--p-ref "./rrna_references.fasta"  \
 	--p-reads "./synthetic_data.fastq" \
 	--p-workdir "./$(q2smr_output_dir)" \
