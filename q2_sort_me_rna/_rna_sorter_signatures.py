@@ -1,6 +1,6 @@
 import pandas as pd
 
-from q2_types.feature_data import BLAST6Format, DNAFASTAFormat
+from q2_types.feature_data import BLAST6Format
 from q2_types_genomics.per_sample_data import SAMDirFmt
 from q2_types.per_sample_sequences \
     import CasavaOneEightSingleLanePerSampleDirFmt
@@ -128,14 +128,15 @@ def otu_mapping(
         -> (BLAST6Format, CasavaOneEightSingleLanePerSampleDirFmt,
             SAMDirFmt, pd.DataFrame):
     arg_value_dict = locals()
-    
+
     for arg in arg_value_dict:
         if arg in ['blast', 'fastx', 'sam', 'otu_map']:
             arg_value_dict[arg] = 1
 
     return sort_rna(**arg_value_dict)
 
-def de_novo_otu_mapping(
+
+def denovo_otu_mapping(
     ref: str,
     reads: str,
     workdir: str = 'out',
@@ -190,7 +191,12 @@ def de_novo_otu_mapping(
     task: int = None,
     dbg_level: int = None) \
         -> (BLAST6Format, CasavaOneEightSingleLanePerSampleDirFmt,
-            SAMDirFmt, pd.DataFrame, DNAFASTAFormat):
+            SAMDirFmt, pd.DataFrame, CasavaOneEightSingleLanePerSampleDirFmt):
 
     arg_value_dict = locals()
+
+    for arg in arg_value_dict:
+        if arg in ['blast', 'fastx', 'sam', 'otu_map', 'de_novo_otu']:
+            arg_value_dict[arg] = 1
+
     return sort_rna(**arg_value_dict)

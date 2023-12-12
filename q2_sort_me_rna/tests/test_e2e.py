@@ -112,6 +112,57 @@ class TestSortRNA(unittest.TestCase):
         self._validate_artifact_types(self.q2smr_output_artifacts_dir,
                                       expected_meta_data)
 
+    def test_denovo_otu_mapping_end_to_end(self):
+        command = [
+            'qiime', 'sort-me-rna', 'denovo-otu-mapping',
+            '--p-ref', f'{self.q2smr_input_dir}/rrna_references.fasta',
+            '--p-reads', f'{self.q2smr_input_dir}/synthetic_data.fastq',
+            '--p-id', '0.12',
+            '--p-coverage', '0.12',
+            '--p-workdir', self.q2smr_output_dir,
+            '--output-dir', self.q2smr_output_artifacts_dir
+        ]
+
+        subprocess.run(command, check=True)
+
+        expected_artifacts = [
+            "blast_aligned_seq.qza",
+            "fastx_aligned_seq.qza",
+            "sam_aligned_seq.qza",
+            "otu_mapping.qza",
+            "denovo_aligned_seq.qza",
+        ]
+
+        for artifact in expected_artifacts:
+            files = os.listdir(self.q2smr_output_artifacts_dir)
+            self.assertIn(artifact, files, "Expected file is not present")
+
+        expected_meta_data = {
+            "blast_aligned_seq.qza": {
+                'Type': 'FeatureData[BLAST6]',
+                'format': 'BLAST6DirectoryFormat',
+            },
+            "fastx_aligned_seq.qza": {
+                'Type': 'SampleData[SequencesWithQuality]',
+                'format': 'SingleLanePerSampleSingleEndFastqDirFmt',
+            },
+            "sam_aligned_seq.qza": {
+                'Type': 'SampleData[SequenceAlignmentMap]',
+                'format': 'SAMDirFmt',
+            },
+            "otu_mapping.qza": {
+                'Type': 'FeatureTable[Frequency]',
+                'format': 'BIOMV210DirFmt',
+            },
+            "denovo_aligned_seq.qza": {
+                'Type': 'SampleData[SequencesWithQuality]',
+                'format': 'SingleLanePerSampleSingleEndFastqDirFmt',
+            },
+        }
+
+        self._validate_artifact_types(self.q2smr_output_artifacts_dir,
+                                      expected_meta_data)
+
     def _copy_files(self, source_directory, destination_directory):
         for filename in os.listdir(source_directory):
             source = os.path.join(source_directory, filename)

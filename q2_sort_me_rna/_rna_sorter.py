@@ -113,7 +113,7 @@ def sort_rna(
     result = [blast_aligned_seq, fastx_aligned_seq, sam_aligned_seq]
     if 'otu_mapping' in locals():
         result.append(otu_mapping)
- 
+
         if 'denovo_otu_aligned_seq' in locals():
             result.append(denovo_otu_aligned_seq)
 
@@ -173,13 +173,17 @@ def _construct_fastx_fmt(smr_output_dir, file):
     if _is_fastq(unzipped_extension):
         unzipped_extension = '.fastq'
         full_ext = f'{unzipped_extension}.{file.split(".")[-1]}'
+        fastx_fmt = CasavaOneEightSingleLanePerSampleDirFmt()
+        shutil.copy(f'{smr_output_dir}/{file}',
+                    f"{str(fastx_fmt)}/aligned_sequence_L999_R1_001{full_ext}")
+    # elif _is_fasta(unzipped_extension):
+    #     unzipped_extension = '.fasta'
+    #     full_ext = f'{unzipped_extension}.{file.split(".")[-1]}'
+    #     fastx_fmt = DNAFASTAFormat()
+    #     shutil.copy(f'{smr_output_dir}/{file}',
+    #                 f"{str(fastx_fmt)}/aligned_sequence{full_ext}")
     else:
         raise ValueError(f'Unsupported file type: {unzipped_extension}')
-
-    fastx_fmt = CasavaOneEightSingleLanePerSampleDirFmt()
-
-    shutil.copy(f'{smr_output_dir}/{file}',
-                f"{str(fastx_fmt)}/aligned_sequence_L999_R1_001{full_ext}")
 
     return fastx_fmt
 

@@ -125,3 +125,23 @@ plugin.methods.register_function(
     name='Foobar test method',
     description=('This is a test method that does nothing but print the input')
 )
+
+plugin.methods.register_function(
+    function=rna_sorter.denovo_otu_mapping,
+    inputs={},
+    parameters=all_sort_me_rna_parameters,
+    outputs=[
+        ('blast_aligned_seq', FeatureData[BLAST6]),
+        ('fastx_aligned_seq', SampleData[SequencesWithQuality]),
+        ('sam_aligned_seq', SampleData[SequenceAlignmentMap]),
+        ('otu_mapping', FeatureTable[Frequency]),
+        ('denovo_aligned_seq', SampleData[SequencesWithQuality]),
+        ],
+    input_descriptions={},
+    parameter_descriptions={
+    },
+    output_descriptions={
+    },
+    name='Foobar test method',
+    description=('This is a test method that does nothing but print the input')
+)
