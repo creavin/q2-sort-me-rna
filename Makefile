@@ -24,6 +24,13 @@ sortmerna:
 	--reads ./synthetic_data.fastq \
 	--workdir $(sortmerna_work_dir)
 
+sortmerna_pair:
+	rm -fdr $(sortmerna_work_dir)
+	sortmerna --ref ./rrna_references.fasta \
+	--reads ./synthetic_data_pair1.fastq \
+	--reads ./synthetic_data_pair2.fastq \
+	--workdir $(sortmerna_work_dir)
+
 dev: clean 
 	mkdir $(q2smr_output_dir)
 	qiime sort-me-rna sort-rna \
@@ -67,6 +74,17 @@ devotudenovo: clean
 	--p-de-novo-otu true \
 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
+
+devpair: clean 
+	mkdir $(q2smr_output_dir)
+	qiime sort-me-rna sort-rna \
+	--p-ref "./rrna_references.fasta"  \
+	--p-reads "./synthetic_data_pair1.fastq" \
+	--p-reads-reverse "./synthetic_data_pair2.fastq" \
+	--p-workdir "./$(q2smr_output_dir)" \
+	--output-dir "./$(q2smr_output_dir)/qiime-output" \
+	--verbose
+	
 
 test_passes_arg: clean 
 	mkdir $(q2smr_output_dir)

@@ -31,6 +31,7 @@ citations = Citations.load('citations.bib', package='q2_sort_me_rna')
 all_sort_me_rna_parameters = {
         'ref': Str,
         'reads': Str,
+        'reads_reverse': Str,
         'workdir': Str,
         'kvdb': Str,
         'idx_dir': Str,

@@ -21,7 +21,8 @@ from q2_types_genomics.per_sample_data import SAMDirFmt
 def sort_rna(
         ref: str,
         reads: str,
-        workdir: str,
+        reads_reverse: str = None,
+        workdir: str = None,
         # [COMMON]
         kvdb: str = None,
         idx_dir: str = None,  # hyphenated
@@ -123,6 +124,7 @@ def sort_rna(
 def _parse_parameters(arg_value_dict):
     uppercase_args = ['sq', 'f', 'n', 'r', 'l']
     hyphenated_args = ['idx_dir', 'no_best', 'zip_out', 'dbg_level']
+    duplicate_args = {"reads_reverse": "reads"}
     parameters = []
 
     # Assumption that the transformations are mutually exclusive
@@ -135,6 +137,8 @@ def _parse_parameters(arg_value_dict):
         elif arg in uppercase_args:
             # Some SortMe params must be uppercase # e.g sq -> SQ
             arg = arg.upper()
+        elif arg in duplicate_args:
+            arg = duplicate_args[arg]
 
         # Single char args use "-" instead of "--" e.g -e, -f, -h
         if len(arg) == 1:

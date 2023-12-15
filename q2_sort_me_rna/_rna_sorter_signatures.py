@@ -11,7 +11,8 @@ from q2_sort_me_rna._rna_sorter import sort_rna as align
 def sort_rna(
     ref: str,
     reads: str,
-    workdir: str = 'out',
+    reads_reverse: str = None,
+    workdir: str = None,
     kvdb: str = None,
     idx_dir: str = None,
     readb: str = None,
@@ -64,7 +65,7 @@ def sort_rna(
     dbg_level: int = None) \
         -> (BLAST6Format, CasavaOneEightSingleLanePerSampleDirFmt, SAMDirFmt):
     arg_value_dict = locals()
-    
+
     for arg in arg_value_dict:
         if arg in ['blast', 'fastx', 'sam']:
             arg_value_dict[arg] = 1
@@ -74,7 +75,8 @@ def sort_rna(
 def otu_mapping(
     ref: str,
     reads: str,
-    workdir: str = 'out',
+    reads_reverse: str = None,
+    workdir: str = None,
     kvdb: str = None,
     idx_dir: str = None,
     readb: str = None,
@@ -139,7 +141,8 @@ def otu_mapping(
 def denovo_otu_mapping(
     ref: str,
     reads: str,
-    workdir: str = 'out',
+    reads_reverse: str = None,
+    workdir: str = None,
     kvdb: str = None,
     idx_dir: str = None,
     readb: str = None,
