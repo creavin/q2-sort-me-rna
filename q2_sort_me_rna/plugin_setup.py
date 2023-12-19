@@ -9,7 +9,7 @@
 from qiime2.plugin import Plugin, Str, Bool, Int, Float, Citations
 from q2_types.sample_data import SampleData
 from q2_types.per_sample_sequences import SequencesWithQuality
-from q2_types.feature_data import BLAST6, FeatureData
+from q2_types.feature_data import BLAST6, FeatureData, Sequence
 from q2_types.feature_table import FeatureTable, Frequency
 from q2_types_genomics.per_sample_data import SequenceAlignmentMap
 
@@ -29,7 +29,7 @@ plugin = Plugin(
 citations = Citations.load('citations.bib', package='q2_sort_me_rna')
 
 all_sort_me_rna_parameters = {
-        'ref': Str,
+        # 'ref': Str,
         # 'reads': Str,
         'reads_reverse': Str,
         'workdir': Str,
@@ -93,7 +93,7 @@ all_sort_me_rna_parameters = {
 plugin.methods.register_function(
     function=rna_sorter.sort_rna,
     inputs={
-        # 'reference_data': FeatureTable[Frequency]
+        'ref': FeatureData[Sequence],
         'reads': SampleData[SequencesWithQuality]
     },
     parameters=all_sort_me_rna_parameters,
@@ -114,6 +114,7 @@ plugin.methods.register_function(
 plugin.methods.register_function(
     function=rna_sorter.otu_mapping,
     inputs={
+        'ref': FeatureData[Sequence],
         'reads': SampleData[SequencesWithQuality]
     },
     parameters=all_sort_me_rna_parameters,
@@ -135,6 +136,7 @@ plugin.methods.register_function(
 plugin.methods.register_function(
     function=rna_sorter.denovo_otu_mapping,
     inputs={
+        'ref': FeatureData[Sequence],
         'reads': SampleData[SequencesWithQuality]
     },
     parameters=all_sort_me_rna_parameters,

@@ -20,7 +20,7 @@ from q2_types_genomics.per_sample_data import SAMDirFmt
 
 
 def sort_rna(
-        ref: str,
+        ref,
         reads,
         reads_reverse: str = None,
         workdir: str = None,
@@ -84,6 +84,8 @@ def sort_rna(
 
     arg_value_dict = locals()
 
+    ref = str(ref)
+
     # In theory, SortMeRNA can handle gzipped files,
     # but in practice it produces empty files for
     # some outputs (.sam, denovo reads)
@@ -119,8 +121,6 @@ def sort_rna(
             sam_aligned_seq = _construct_sam_fmt(smr_output_dir, smr_file)
         elif smr_file == 'otu_map.txt':
             otu_mapping = _construct_otu_mapping(smr_output_dir, smr_file)
-
-        print(locals())
 
     result = [blast_aligned_seq, fastx_aligned_seq, sam_aligned_seq]
     if 'otu_mapping' in locals():

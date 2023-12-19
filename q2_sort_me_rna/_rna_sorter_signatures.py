@@ -1,6 +1,6 @@
 import pandas as pd
 
-from q2_types.feature_data import BLAST6Format
+from q2_types.feature_data import BLAST6Format, DNAFASTAFormat
 from q2_types_genomics.per_sample_data import SAMDirFmt
 from q2_types.per_sample_sequences \
     import CasavaOneEightSingleLanePerSampleDirFmt
@@ -9,7 +9,7 @@ from q2_sort_me_rna._rna_sorter import sort_rna as align
 
 
 def sort_rna(
-    ref: str,
+    ref: DNAFASTAFormat,
     reads: CasavaOneEightSingleLanePerSampleDirFmt,
     reads_reverse: str = None,
     workdir: str = None,
@@ -73,7 +73,7 @@ def sort_rna(
 
 
 def otu_mapping(
-    ref: str,
+    ref: DNAFASTAFormat,
     reads: CasavaOneEightSingleLanePerSampleDirFmt,
     reads_reverse: str = None,
     workdir: str = None,
@@ -140,7 +140,7 @@ def otu_mapping(
 
 
 def denovo_otu_mapping(
-    ref: str,
+    ref: DNAFASTAFormat,
     reads: CasavaOneEightSingleLanePerSampleDirFmt,
     reads_reverse: str = None,
     workdir: str = None,

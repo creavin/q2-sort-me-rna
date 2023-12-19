@@ -64,6 +64,12 @@ artifact:
 	--output-path sequence_L999_R1_001.qza \
 	--input-format CasavaOneEightSingleLanePerSampleDirFmt
 
+artifact_ref:
+	qiime tools import \
+	--type 'FeatureData[Sequence]' \
+	--input-path rrna_references.fasta \
+	--output-path rrna_references.qza \
+	--input-format DNAFASTAFormat
 
 	# --input-path ./synthetic_data.fastq \
 	# qiime tools import \
@@ -77,7 +83,7 @@ dev: clean
 	mkdir $(q2smr_output_dir)
 	qiime sort-me-rna sort-rna \
 	--i-reads "./raw_sequence_L999_R1_001.qza" \
-	--p-ref "./rrna_references.fasta"  \
+	--i-ref "./rrna_references.qza"  \
 	--p-workdir "./$(q2smr_output_dir)" \
 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
@@ -96,7 +102,7 @@ devotu: clean
 	mkdir $(q2smr_output_dir)
 	qiime sort-me-rna otu-mapping \
 	--i-reads "./raw_sequence_L999_R1_001.qza" \
-	--p-ref "./rrna_references.fasta"  \
+	--i-ref "./rrna_references.qza"  \
 	--p-workdir "./$(q2smr_output_dir)" \
 	--p-id 0.12 \
 	--p-coverage 0.12 \
@@ -107,7 +113,7 @@ devotudenovo: clean
 	mkdir $(q2smr_output_dir)
 	qiime sort-me-rna denovo-otu-mapping \
 	--i-reads "./raw_sequence_L999_R1_001.qza" \
-	--p-ref "./rrna_references.fasta"  \
+	--i-ref "./rrna_references.qza"  \
 	--p-workdir "./$(q2smr_output_dir)" \
 	--p-id 0.7 \
 	--p-coverage 0.7 \
