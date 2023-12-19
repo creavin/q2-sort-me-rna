@@ -1,5 +1,7 @@
 sortmerna_work_dir = out
 q2smr_output_dir = output
+art_dir = ./q2_sort_me_rna/tests/assets
+seq_dir = ./q2_sort_me_rna/tests/assets/seq
 
 install: 
 	pip install -e .
@@ -20,15 +22,14 @@ blast_cache: install
 
 sortmerna:
 	rm -fdr $(sortmerna_work_dir)
-	sortmerna --ref ./rrna_references.fasta \
-
-	--reads ./synthetic_data.fastq \
+	sortmerna --ref $(seq_dir)/rrna_references.fasta \
+	--reads $(seq_dir)/synthetic_data.fastq \
 	--workdir $(sortmerna_work_dir)
 
 sortmerna_denovo:
 	rm -fdr $(sortmerna_work_dir)
-	sortmerna --ref ./rrna_references.fasta \
-	--reads ./synthetic_data.fastq \
+	sortmerna --ref $(seq_dir)/rrna_references.fasta \
+	--reads $(seq_dir)/synthetic_data.fastq \
 	--de_novo_otu true \
 	--otu_map true \
 	--sam true \
@@ -40,8 +41,8 @@ sortmerna_denovo:
 
 sortmerna_denovo_gz:
 	rm -fdr $(sortmerna_work_dir)
-	sortmerna --ref ./rrna_references.fasta \
-	--reads ./synthetic_data.fastq.gz \
+	sortmerna --ref $(seq_dir)/rrna_references.fasta \
+	--reads $(seq_dir)/synthetic_data.fastq.gz \
 	--otu_map true \
 	--sam true \
 	--blast '1' \
@@ -52,9 +53,9 @@ sortmerna_denovo_gz:
 
 sortmerna_pair:
 	rm -fdr $(sortmerna_work_dir)
-	sortmerna --ref ./rrna_references.fasta \
-	--reads ./synthetic_data_pair1.fastq \
-	--reads ./synthetic_data_pair2.fastq \
+	sortmerna --ref $(seq_dir)/rrna_references.fasta \
+	--reads $(seq_dir)/synthetic_data_pair1.fastq \
+	--reads $(seq_dir)/synthetic_data_pair2.fastq \
 	--workdir $(sortmerna_work_dir)
 
 artifact:
@@ -81,8 +82,8 @@ artifact_ref:
 dev: clean 
 	mkdir $(q2smr_output_dir)
 	qiime sort-me-rna sort-rna \
-	--i-reads "./pair_sequence_L999_R1_001.qza" \
-	--i-ref "./rrna_references.qza"  \
+	--i-reads "$(art_dir)/paired_raw_sequence.qza" \
+	--i-ref "$(art_dir)/rrna_references.qza"  \
 	--p-workdir "./$(q2smr_output_dir)" \
 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
@@ -90,8 +91,8 @@ dev: clean
 devall: clean 
 	mkdir $(q2smr_output_dir)
 	qiime sort-me-rna sort-rna \
-	--i-reads "./raw_sequence_L999_R1_001.qza" \
-	--i-ref "./rrna_references.qza"  \
+	--i-reads "$(art_dir)/raw_sequence.qza" \
+	--i-ref "$(art_dir)/rrna_references.qza"  \
 	--p-workdir "./$(q2smr_output_dir)" \
 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
@@ -99,8 +100,8 @@ devall: clean
 devall_pair: clean 
 	mkdir $(q2smr_output_dir)
 	qiime sort-me-rna sort-rna \
-	--i-reads "./pair_sequence_L999_R1_001.qza" \
-	--i-ref "./rrna_references.qza"  \
+	--i-reads "$(art_dir)/paired_raw_sequence.qza" \
+	--i-ref "$(art_dir)/rrna_references.qza"  \
 	--p-workdir "./$(q2smr_output_dir)" \
 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
@@ -108,8 +109,8 @@ devall_pair: clean
 devotu: clean 
 	mkdir $(q2smr_output_dir)
 	qiime sort-me-rna otu-mapping \
-	--i-reads "./raw_sequence_L999_R1_001.qza" \
-	--i-ref "./rrna_references.qza"  \
+	--i-reads "$(art_dir)/raw_sequence.qza" \
+	--i-ref "$(art_dir)/rrna_references.qza"  \
 	--p-workdir "./$(q2smr_output_dir)" \
 	--p-id 0.12 \
 	--p-coverage 0.12 \
@@ -119,8 +120,8 @@ devotu: clean
 devotudenovo: clean 
 	mkdir $(q2smr_output_dir)
 	qiime sort-me-rna denovo-otu-mapping \
-	--i-reads "./raw_sequence_L999_R1_001.qza" \
-	--i-ref "./rrna_references.qza"  \
+	--i-reads "$(art_dir)/raw_sequence.qza" \
+	--i-ref "$(art_dir)/rrna_references.qza"  \
 	--p-workdir "./$(q2smr_output_dir)" \
 	--p-id 0.7 \
 	--p-coverage 0.7 \
@@ -130,8 +131,8 @@ devotudenovo: clean
 devpair: clean 
 	mkdir $(q2smr_output_dir)
 	qiime sort-me-rna sort-rna \
-	--p-ref "./rrna_references.fasta"  \
-	--p-reads-reverse "./synthetic_data_pair2.fastq" \
+	--p-ref "$(seq_dir)/rrna_references.fasta"  \
+	--p-reads-reverse "$(seq_dir)/synthetic_data_pair2.fastq" \
 	--p-workdir "./$(q2smr_output_dir)" \
 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
@@ -140,8 +141,8 @@ devpair: clean
 test_passes_arg: clean 
 	mkdir $(q2smr_output_dir)
 	qiime sort-me-rna sort-rna \
-	--p-ref "./rrna_references.fasta"  \
-	--p-reads "./synthetic_data.fastq" \
+	--p-ref "$(seq_dir)/rrna_references.fasta"  \
+	--p-reads "$(seq_dir)/synthetic_data.fastq" \
 	--p-workdir "./$(q2smr_output_dir)" \
 	--p-passes "1,1,1" \
 	--o-aligned-seq "./$(q2smr_output_dir)/qiime-output" \
