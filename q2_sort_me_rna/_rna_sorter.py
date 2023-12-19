@@ -10,6 +10,7 @@ import pandas as pd
 import os
 import gzip
 import shutil
+import glob
 
 from q2_types.feature_data import BLAST6Format
 from q2_types.per_sample_sequences \
@@ -20,7 +21,7 @@ from q2_types_genomics.per_sample_data import SAMDirFmt
 
 def sort_rna(
         ref: str,
-        reads: str,
+        reads,
         reads_reverse: str = None,
         workdir: str = None,
         # [COMMON]
@@ -83,6 +84,13 @@ def sort_rna(
 
     arg_value_dict = locals()
 
+    # In theory, SortMeRNA can handle gzipped files,
+    # but in practice it produces empty files for
+    # some outputs (.sam, denovo reads)
+    input_file = _get_read_file(reads)
+    _un_gzip_file(input_file, f'{arg_value_dict["workdir"]}/reads.fastq')
+    arg_value_dict['reads'] = f'{arg_value_dict["workdir"]}/reads.fastq'
+
     command = 'sortmerna'
     parameters = _parse_parameters(arg_value_dict)
     command_string = f'{command} {" ".join(parameters)}'
@@ -102,7 +110,8 @@ def sort_rna(
         elif _is_fastx_(extension):
             if _is_denovo_otu(smr_file):
                 denovo_otu_aligned_seq = \
-                    _construct_fastx_fmt(smr_output_dir, smr_file)
+                    _construct_fastx_fmt(smr_output_dir,
+                                         smr_file, "denovo_aligned_seq")
             else:
                 fastx_aligned_seq = \
                     _construct_fastx_fmt(smr_output_dir, smr_file)
@@ -111,12 +120,14 @@ def sort_rna(
         elif smr_file == 'otu_map.txt':
             otu_mapping = _construct_otu_mapping(smr_output_dir, smr_file)
 
+        print(locals())
+
     result = [blast_aligned_seq, fastx_aligned_seq, sam_aligned_seq]
     if 'otu_mapping' in locals():
         result.append(otu_mapping)
 
-        if 'denovo_otu_aligned_seq' in locals():
-            result.append(denovo_otu_aligned_seq)
+    if 'denovo_otu_aligned_seq' in locals():
+        result.append(denovo_otu_aligned_seq)
 
     return tuple(result)
 
@@ -167,7 +178,7 @@ def _construct_blast_fmt(smr_output_dir, file):
 
 
 # TODO: add fasta support
-def _construct_fastx_fmt(smr_output_dir, file):
+def _construct_fastx_fmt(smr_output_dir, file, output_name="aligned_sequence"):
     if not _is_gun_zipped(file):
         _gzip_file(f'{smr_output_dir}/{file}',
                    f'{smr_output_dir}/{file}.gz')
@@ -179,7 +190,7 @@ def _construct_fastx_fmt(smr_output_dir, file):
         full_ext = f'{unzipped_extension}.{file.split(".")[-1]}'
         fastx_fmt = CasavaOneEightSingleLanePerSampleDirFmt()
         shutil.copy(f'{smr_output_dir}/{file}',
-                    f"{str(fastx_fmt)}/aligned_sequence_L999_R1_001{full_ext}")
+                    f"{str(fastx_fmt)}/{output_name}_L999_R1_001{full_ext}")
     # elif _is_fasta(unzipped_extension):
     #     unzipped_extension = '.fasta'
     #     full_ext = f'{unzipped_extension}.{file.split(".")[-1]}'
@@ -197,7 +208,7 @@ def _construct_sam_fmt(smr_output_dir, file):
 
     if _is_gun_zipped(file):
         unzipped_file = os.path.splitext(file)[0]
-        _un_gzip_file(f'{smr_output_dir}/{file}', 
+        _un_gzip_file(f'{smr_output_dir}/{file}',
                       f'{smr_output_dir}/{unzipped_file}')
         file = unzipped_file
 
@@ -251,3 +262,15 @@ def _is_fasta(extension):
     # https://en.wikipedia.org/wiki/FASTA_format
     return extension in ('.fasta', '.fas', '.fa', '.fna', '.ffn',
                          '.faa', '.mpfa', '.frn')
+
+
+def _get_read_file(reads_artifact):
+    gz_files = glob.glob(os.path.join(str(reads_artifact), '*.gz'))
+
+    print("The files are")
+    for gz_file in gz_files:
+        print(gz_file)
+
+    assert len(gz_files) == 1
+
+    return gz_files[0]

@@ -30,7 +30,7 @@ citations = Citations.load('citations.bib', package='q2_sort_me_rna')
 
 all_sort_me_rna_parameters = {
         'ref': Str,
-        'reads': Str,
+        # 'reads': Str,
         'reads_reverse': Str,
         'workdir': Str,
         'kvdb': Str,
@@ -92,7 +92,10 @@ all_sort_me_rna_parameters = {
 
 plugin.methods.register_function(
     function=rna_sorter.sort_rna,
-    inputs={},
+    inputs={
+        # 'reference_data': FeatureTable[Frequency]
+        'reads': SampleData[SequencesWithQuality]
+    },
     parameters=all_sort_me_rna_parameters,
     outputs=[
         ('blast_aligned_seq', FeatureData[BLAST6]),
@@ -110,7 +113,9 @@ plugin.methods.register_function(
 
 plugin.methods.register_function(
     function=rna_sorter.otu_mapping,
-    inputs={},
+    inputs={
+        'reads': SampleData[SequencesWithQuality]
+    },
     parameters=all_sort_me_rna_parameters,
     outputs=[
         ('blast_aligned_seq', FeatureData[BLAST6]),
@@ -129,7 +134,9 @@ plugin.methods.register_function(
 
 plugin.methods.register_function(
     function=rna_sorter.denovo_otu_mapping,
-    inputs={},
+    inputs={
+        'reads': SampleData[SequencesWithQuality]
+    },
     parameters=all_sort_me_rna_parameters,
     outputs=[
         ('blast_aligned_seq', FeatureData[BLAST6]),

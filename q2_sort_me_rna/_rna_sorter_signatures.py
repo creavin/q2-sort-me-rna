@@ -10,7 +10,7 @@ from q2_sort_me_rna._rna_sorter import sort_rna as align
 
 def sort_rna(
     ref: str,
-    reads: str,
+    reads: CasavaOneEightSingleLanePerSampleDirFmt,
     reads_reverse: str = None,
     workdir: str = None,
     kvdb: str = None,
@@ -67,14 +67,14 @@ def sort_rna(
     arg_value_dict = locals()
 
     for arg in arg_value_dict:
-        if arg in ['blast', 'fastx', 'sam']:
+        if arg in ['blast', 'fastx', 'sam'] and arg_value_dict[arg] is None:
             arg_value_dict[arg] = 1
     return align(**arg_value_dict)
 
 
 def otu_mapping(
     ref: str,
-    reads: str,
+    reads: CasavaOneEightSingleLanePerSampleDirFmt,
     reads_reverse: str = None,
     workdir: str = None,
     kvdb: str = None,
@@ -132,7 +132,8 @@ def otu_mapping(
     arg_value_dict = locals()
 
     for arg in arg_value_dict:
-        if arg in ['blast', 'fastx', 'sam', 'otu_map']:
+        if arg in ['blast', 'fastx', 'sam', 'otu_map'] and \
+                arg_value_dict[arg] is None:
             arg_value_dict[arg] = 1
 
     return sort_rna(**arg_value_dict)
@@ -140,7 +141,7 @@ def otu_mapping(
 
 def denovo_otu_mapping(
     ref: str,
-    reads: str,
+    reads: CasavaOneEightSingleLanePerSampleDirFmt,
     reads_reverse: str = None,
     workdir: str = None,
     kvdb: str = None,
@@ -199,7 +200,8 @@ def denovo_otu_mapping(
     arg_value_dict = locals()
 
     for arg in arg_value_dict:
-        if arg in ['blast', 'fastx', 'sam', 'otu_map', 'de_novo_otu']:
+        if arg in ['blast', 'fastx', 'sam', 'otu_map', 'de_novo_otu'] and \
+                arg_value_dict[arg] is None:
             arg_value_dict[arg] = 1
 
     return sort_rna(**arg_value_dict)
