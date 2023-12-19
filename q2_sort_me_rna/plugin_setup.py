@@ -6,9 +6,10 @@
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
 
-from qiime2.plugin import Plugin, Str, Bool, Int, Float, Citations
+from qiime2.plugin import Plugin, Str, Bool, Int, Float, Citations, TypeMatch
 from q2_types.sample_data import SampleData
-from q2_types.per_sample_sequences import SequencesWithQuality
+from q2_types.per_sample_sequences \
+    import SequencesWithQuality, PairedEndSequencesWithQuality
 from q2_types.feature_data import BLAST6, FeatureData, Sequence
 from q2_types.feature_table import FeatureTable, Frequency
 from q2_types_genomics.per_sample_data import SequenceAlignmentMap
@@ -90,11 +91,12 @@ all_sort_me_rna_parameters = {
         'dbg_level': Int
 }
 
+T = TypeMatch([SequencesWithQuality, PairedEndSequencesWithQuality])
 plugin.methods.register_function(
     function=rna_sorter.sort_rna,
     inputs={
         'ref': FeatureData[Sequence],
-        'reads': SampleData[SequencesWithQuality]
+        'reads': SampleData[T]
     },
     parameters=all_sort_me_rna_parameters,
     outputs=[
@@ -115,7 +117,7 @@ plugin.methods.register_function(
     function=rna_sorter.otu_mapping,
     inputs={
         'ref': FeatureData[Sequence],
-        'reads': SampleData[SequencesWithQuality]
+        'reads': SampleData[T]
     },
     parameters=all_sort_me_rna_parameters,
     outputs=[
@@ -137,7 +139,7 @@ plugin.methods.register_function(
     function=rna_sorter.denovo_otu_mapping,
     inputs={
         'ref': FeatureData[Sequence],
-        'reads': SampleData[SequencesWithQuality]
+        'reads': SampleData[T]
     },
     parameters=all_sort_me_rna_parameters,
     outputs=[

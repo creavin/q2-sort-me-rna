@@ -89,9 +89,14 @@ def sort_rna(
     # In theory, SortMeRNA can handle gzipped files,
     # but in practice it produces empty files for
     # some outputs (.sam, denovo reads)
-    input_file = _get_read_file(reads)
+    input_file, rev = _get_read_files(reads)
     _un_gzip_file(input_file, f'{arg_value_dict["workdir"]}/reads.fastq')
     arg_value_dict['reads'] = f'{arg_value_dict["workdir"]}/reads.fastq'
+
+    if rev:
+        _un_gzip_file(rev, f'{arg_value_dict["workdir"]}/reads_rev.fastq')
+        arg_value_dict['reads_reverse'] = \
+            f'{arg_value_dict["workdir"]}/reads_rev.fastq'
 
     command = 'sortmerna'
     parameters = _parse_parameters(arg_value_dict)
@@ -264,13 +269,16 @@ def _is_fasta(extension):
                          '.faa', '.mpfa', '.frn')
 
 
-def _get_read_file(reads_artifact):
+def _get_read_files(reads_artifact):
     gz_files = glob.glob(os.path.join(str(reads_artifact), '*.gz'))
 
     print("The files are")
     for gz_file in gz_files:
         print(gz_file)
 
-    assert len(gz_files) == 1
+    assert len(gz_files) <= 2
 
-    return gz_files[0]
+    if len(gz_files) == 2:
+        return gz_files[0], gz_files[1]
+    else:
+        return gz_files[0], None

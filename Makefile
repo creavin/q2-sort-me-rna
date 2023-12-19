@@ -64,6 +64,13 @@ artifact:
 	--output-path sequence_L999_R1_001.qza \
 	--input-format CasavaOneEightSingleLanePerSampleDirFmt
 
+artifact_pair:
+	qiime tools import \
+	--type 'SampleData[PairedEndSequencesWithQuality]' \
+	--input-path seq \
+	--output-path pair_sequence_L999_R1_001.qza \
+	--input-format CasavaOneEightSingleLanePerSampleDirFmt
+
 artifact_ref:
 	qiime tools import \
 	--type 'FeatureData[Sequence]' \
@@ -71,15 +78,16 @@ artifact_ref:
 	--output-path rrna_references.qza \
 	--input-format DNAFASTAFormat
 
-	# --input-path ./synthetic_data.fastq \
-	# qiime tools import \
-	# --input-path ./synthetic_data.fastq \
-	# --output-path ./synthetic_data.qza \
-	# --type 'EMPSingleEndSequences'
-	# --type 'SampleData[SequencesWithQuality]'
-	#  qiime tools import rrna_references.fasta 
-
 dev: clean 
+	mkdir $(q2smr_output_dir)
+	qiime sort-me-rna sort-rna \
+	--i-reads "./pair_sequence_L999_R1_001.qza" \
+	--i-ref "./rrna_references.qza"  \
+	--p-workdir "./$(q2smr_output_dir)" \
+	--output-dir "./$(q2smr_output_dir)/qiime-output" \
+	--verbose
+
+devall: clean 
 	mkdir $(q2smr_output_dir)
 	qiime sort-me-rna sort-rna \
 	--i-reads "./raw_sequence_L999_R1_001.qza" \
@@ -88,12 +96,11 @@ dev: clean
 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
 
-
-devall: clean 
+devall_pair: clean 
 	mkdir $(q2smr_output_dir)
 	qiime sort-me-rna sort-rna \
-	--i-reads "./raw_sequence_L999_R1_001.qza" \
-	--p-ref "./rrna_references.fasta"  \
+	--i-reads "./pair_sequence_L999_R1_001.qza" \
+	--i-ref "./rrna_references.qza"  \
 	--p-workdir "./$(q2smr_output_dir)" \
 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
