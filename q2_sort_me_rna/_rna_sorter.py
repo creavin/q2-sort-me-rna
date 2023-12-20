@@ -83,19 +83,21 @@ def sort_rna(
 
     arg_value_dict = locals()
 
-    ref = str(ref)
+    # Get the path to the QIIME artifact
+    # ref = str(ref)
 
     # In theory, SortMeRNA can handle gzipped files,
     # but in practice it produces empty files for
-    # some outputs (.sam, denovo reads)
-    input_file, rev = _get_read_files(reads)
-    _un_gzip_file(input_file, f'{arg_value_dict["workdir"]}/reads.fastq')
-    arg_value_dict['reads'] = f'{arg_value_dict["workdir"]}/reads.fastq'
+    # some outputs (.sam, denovo reads) so we decompress before proceeding
+    forward_read_file, reverse_read_file = _get_read_files(reads)
+    arg_value_dict['reads'] = \
+        _un_gzip_file(forward_read_file,
+                      f'{arg_value_dict["workdir"]}/reads.fastq')
 
-    if rev:
-        _un_gzip_file(rev, f'{arg_value_dict["workdir"]}/reads_rev.fastq')
+    if reverse_read_file:
         arg_value_dict['reads_reverse'] = \
-            f'{arg_value_dict["workdir"]}/reads_rev.fastq'
+            _un_gzip_file(reverse_read_file,
+                          f'{arg_value_dict["workdir"]}/reads_rev.fastq')
 
     command = 'sortmerna'
     parameters = _parse_parameters(arg_value_dict)
@@ -108,6 +110,7 @@ def sort_rna(
 
     for smr_file in smr_output_files:
         extension = os.path.splitext(smr_file)[1]
+        # if foo.blast.gz, then the extension will be .blast
         if _is_gun_zipped(smr_file):
             extension = '.' + smr_file.split('.')[-2]
 
@@ -181,7 +184,6 @@ def _construct_blast_fmt(smr_output_dir, file):
     return blast_fmt
 
 
-# TODO: add fasta support
 def _construct_fastx_fmt(smr_output_dir, file, output_name="aligned_sequence"):
     if not _is_gun_zipped(file):
         _gzip_file(f'{smr_output_dir}/{file}',
@@ -195,6 +197,7 @@ def _construct_fastx_fmt(smr_output_dir, file, output_name="aligned_sequence"):
         fastx_fmt = CasavaOneEightSingleLanePerSampleDirFmt()
         shutil.copy(f'{smr_output_dir}/{file}',
                     f"{str(fastx_fmt)}/{output_name}_L999_R1_001{full_ext}")
+    # TODO: add fasta support
     # elif _is_fasta(unzipped_extension):
     #     unzipped_extension = '.fasta'
     #     full_ext = f'{unzipped_extension}.{file.split(".")[-1]}'
@@ -238,11 +241,15 @@ def _gzip_file(input_file, output_file):
         with gzip.open(output_file, 'wb') as f_out:
             shutil.copyfileobj(f_in, f_out)
 
+    return output_file
+
 
 def _un_gzip_file(gzip_file_path, output_file_path):
     with gzip.open(gzip_file_path, 'rb') as f_in, \
               open(output_file_path, 'wb') as f_out:
         shutil.copyfileobj(f_in, f_out)
+
+    return output_file_path
 
 
 def _is_gun_zipped(file):
