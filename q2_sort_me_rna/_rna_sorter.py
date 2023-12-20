@@ -22,7 +22,6 @@ from q2_types_genomics.per_sample_data import SAMDirFmt
 def sort_rna(
         ref,
         reads,
-        reads_reverse: str = None,
         workdir: str = None,
         # [COMMON]
         kvdb: str = None,

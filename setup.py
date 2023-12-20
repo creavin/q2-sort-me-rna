@@ -5,7 +5,6 @@
 #
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
-
 from setuptools import setup, find_packages
 import versioneer
 
@@ -16,7 +15,7 @@ setup(
     packages=find_packages(),
     author="Thomas Creavin",
     author_email="thomas.creavin@gmail.com",
-    description="QIIME 2 plugin for SortMeRNA",
+    description="A QIIME2 wrapper for the sequence alignment tool SortMeRNA.",
     license='BSD-3-Clause',
     url='https://qiime2.org',
     entry_points={

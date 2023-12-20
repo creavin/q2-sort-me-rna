@@ -5,7 +5,6 @@
 #
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
-
 from ._rna_sorter import sort_rna
 from ._version import get_versions
 

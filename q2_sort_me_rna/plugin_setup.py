@@ -5,7 +5,6 @@
 #
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
-
 from qiime2.plugin import Plugin, Str, Bool, Int, Float, Citations, TypeMatch
 from q2_types.sample_data import SampleData
 from q2_types.per_sample_sequences \
@@ -30,9 +29,6 @@ plugin = Plugin(
 citations = Citations.load('citations.bib', package='q2_sort_me_rna')
 
 all_sort_me_rna_parameters = {
-        # 'ref': Str,
-        # 'reads': Str,
-        'reads_reverse': Str,
         'workdir': Str,
         'kvdb': Str,
         'idx_dir': Str,

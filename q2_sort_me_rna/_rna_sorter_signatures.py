@@ -1,3 +1,10 @@
+# ----------------------------------------------------------------------------
+# Copyright (c) 2016-2023, QIIME 2 development team.
+#
+# Distributed under the terms of the Modified BSD License.
+#
+# The full license is in the file LICENSE, distributed with this software.
+# ----------------------------------------------------------------------------
 import pandas as pd
 
 from q2_types.feature_data import BLAST6Format, DNAFASTAFormat
@@ -11,7 +18,6 @@ from q2_sort_me_rna._rna_sorter import sort_rna as align
 def sort_rna(
     ref: DNAFASTAFormat,
     reads: CasavaOneEightSingleLanePerSampleDirFmt,
-    reads_reverse: str = None,
     workdir: str = None,
     kvdb: str = None,
     idx_dir: str = None,
@@ -75,7 +81,6 @@ def sort_rna(
 def otu_mapping(
     ref: DNAFASTAFormat,
     reads: CasavaOneEightSingleLanePerSampleDirFmt,
-    reads_reverse: str = None,
     workdir: str = None,
     kvdb: str = None,
     idx_dir: str = None,
@@ -142,7 +147,6 @@ def otu_mapping(
 def denovo_otu_mapping(
     ref: DNAFASTAFormat,
     reads: CasavaOneEightSingleLanePerSampleDirFmt,
-    reads_reverse: str = None,
     workdir: str = None,
     kvdb: str = None,
     idx_dir: str = None,

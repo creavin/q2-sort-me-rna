@@ -17,7 +17,7 @@ class TestSortRNA(unittest.TestCase):
 
     def setUp(self):
         self.q2smr_input_dir = tempfile.mkdtemp()
-        self._copy_files('./q2_sort_me_rna/tests/test_assets',
+        self._copy_files('./q2_sort_me_rna/tests/assets',
                          self.q2smr_input_dir)
 
         self.q2smr_output_dir = tempfile.mkdtemp()
@@ -30,8 +30,8 @@ class TestSortRNA(unittest.TestCase):
     def test_sort_rna_end_to_end(self):
         command = [
             'qiime', 'sort-me-rna', 'sort-rna',
-            '--p-ref', f'{self.q2smr_input_dir}/rrna_references.fasta',
-            '--p-reads', f'{self.q2smr_input_dir}/synthetic_data.fastq',
+            '--i-ref', f'{self.q2smr_input_dir}/rrna_references.qza',
+            '--i-reads', f'{self.q2smr_input_dir}/paired_raw_sequence.qza',
             '--p-workdir', self.q2smr_output_dir,
             '--output-dir', self.q2smr_output_artifacts_dir
         ]
@@ -69,8 +69,8 @@ class TestSortRNA(unittest.TestCase):
     def test_otu_mapping_end_to_end(self):
         command = [
             'qiime', 'sort-me-rna', 'otu-mapping',
-            '--p-ref', f'{self.q2smr_input_dir}/rrna_references.fasta',
-            '--p-reads', f'{self.q2smr_input_dir}/synthetic_data.fastq',
+            '--i-ref', f'{self.q2smr_input_dir}/rrna_references.qza',
+            '--i-reads', f'{self.q2smr_input_dir}/raw_sequence.qza',
             '--p-id', '0.12',
             '--p-coverage', '0.12',
             '--p-workdir', self.q2smr_output_dir,
@@ -115,10 +115,10 @@ class TestSortRNA(unittest.TestCase):
     def test_denovo_otu_mapping_end_to_end(self):
         command = [
             'qiime', 'sort-me-rna', 'denovo-otu-mapping',
-            '--p-ref', f'{self.q2smr_input_dir}/rrna_references.fasta',
-            '--p-reads', f'{self.q2smr_input_dir}/synthetic_data.fastq',
-            '--p-id', '0.12',
-            '--p-coverage', '0.12',
+            '--i-ref', f'{self.q2smr_input_dir}/rrna_references.qza',
+            '--i-reads', f'{self.q2smr_input_dir}/raw_sequence.qza',
+            '--p-id', '0.7',
+            '--p-coverage', '0.7',
             '--p-workdir', self.q2smr_output_dir,
             '--output-dir', self.q2smr_output_artifacts_dir
         ]
@@ -176,11 +176,15 @@ class TestSortRNA(unittest.TestCase):
             self._validate_artifact_type(file, expected_meta_data[filename])
 
     def _validate_artifact_type(self, file, expected_meta_data):
-        command = ['qiime', 'tools', 'peek', file]
-        output = subprocess.run(command, check=True,
-                                stdout=subprocess.PIPE, text=True)
+        qiime_validate_cmd = ['qiime', 'tools', 'validate', file]
+        subprocess.run(qiime_validate_cmd, check=True,
+                       stdout=subprocess.PIPE, text=True)
 
-        key_value_pairs = re.findall(r'(\S+):\s+(\S+)', output.stdout)
+        qiime_peek_cmd = ['qiime', 'tools', 'peek', file]
+        peek_result = subprocess.run(qiime_peek_cmd, check=True,
+                                     stdout=subprocess.PIPE, text=True)
+
+        key_value_pairs = re.findall(r'(\S+):\s+(\S+)', peek_result.stdout)
         result_dict = dict(key_value_pairs)
 
         err_msg = "Artifact metadata does not match the expected values"
