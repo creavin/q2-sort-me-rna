@@ -22,12 +22,16 @@ plugin = Plugin(
     version=q2_sort_me_rna.__version__,
     website='https://github.com/qiime2/q2-sort-me-rna',
     package='q2_sort_me_rna',
-    description=('Plugin for calling SortMeRNA.'),  # TODO expand
-    short_description='Plugin for calling SortMeRNA.',
+    description=('A QIIME2 wrapper for the sequence alignment ' +
+                 'tool SortMeRNA.'),
+    short_description='A QIIME2 wrapper for the sequence alignment ' +
+                      'tool SortMeRNA.',
 )
 
 citations = Citations.load('citations.bib', package='q2_sort_me_rna')
 
+# The parameters names are chosen to match the sortmerna man page
+# To be consistent, the names are lowercased and hyphens are underscores
 all_sort_me_rna_parameters = {
         'workdir': Str,
         'kvdb': Str,
@@ -58,8 +62,8 @@ all_sort_me_rna_parameters = {
         'n': Bool,
         'r': Bool,
         # [OTU_PICKING]
-        'id': Float,  # documentation is wrong, must be a float
-        'coverage': Float,  # documentation is wrong, must be a float
+        'id': Float,  # SMR documentation is wrong, must be a float
+        'coverage': Float,  # SMR documentation is wrong, must be a float
         'de_novo_otu': Bool,
         'otu_map': Bool,
         # [ADVANCED]
@@ -89,7 +93,7 @@ all_sort_me_rna_parameters = {
 
 T = TypeMatch([SequencesWithQuality, PairedEndSequencesWithQuality])
 plugin.methods.register_function(
-    function=rna_sorter.sort_rna,
+    function=rna_sorter.align_sequences,
     inputs={
         'ref': FeatureData[Sequence],
         'reads': SampleData[T]
@@ -101,12 +105,19 @@ plugin.methods.register_function(
         ('sam_aligned_seq', SampleData[SequenceAlignmentMap]),
         ],
     input_descriptions={},
-    parameter_descriptions={
-    },
+    parameter_descriptions={},
     output_descriptions={
+        'blast_aligned_seq': 'Aligned reads in the BLAST format',
+        'fastx_aligned_seq': 'Aligned reads in the FASTA/FASTQ format',
+        'sam_aligned_seq': 'Aligned reads SAM format'
     },
-    name='Foobar test method',
-    description=('This is a test method that does nothing but print the input')
+    name='Align the sequences',
+    description=('''
+                 For single-ended or paired sequence, align them with respect
+                 to a reference sequence database and return all three
+                 alignment types: blast, fastx, and sam. Consult the SortMeRNA
+                 documentation for more information on the parameters.
+                 ''')
 )
 
 plugin.methods.register_function(
@@ -126,9 +137,20 @@ plugin.methods.register_function(
     parameter_descriptions={
     },
     output_descriptions={
+        'blast_aligned_seq': 'Aligned reads in the BLAST format',
+        'fastx_aligned_seq': 'Aligned reads in the FASTA/FASTQ format',
+        'sam_aligned_seq': 'Aligned reads SAM format',
+        'otu_mapping': 'OTU map of the aligned reads'
     },
-    name='Foobar test method',
-    description=('This is a test method that does nothing but print the input')
+    name='Align and OTU map the sequences',
+    description=('''
+                 For single-ended or paired sequence, align them with respect
+                 to a reference sequence database and return all three
+                 alignment types: blast, fastx, and sam.  Additionally,
+                 produce an otu mapping of the aligned sequences. Consult the
+                 SortMeRNA documentation for more information on the
+                 parameters.
+                 ''')
 )
 
 plugin.methods.register_function(
@@ -150,6 +172,13 @@ plugin.methods.register_function(
     },
     output_descriptions={
     },
-    name='Foobar test method',
-    description=('This is a test method that does nothing but print the input')
+    name='Align and OTU map (with De Novo reads of) the sequences',
+    description=('''
+                 For single-ended or paired sequence, align them with respect
+                 to a reference sequence database and return all three
+                 alignment types: blast, fastx, and sam.  Additionally,
+                 produce an otu mapping of the aligned sequences and a fastx
+                 file with the de novo reads. Consult the SortMeRNA
+                 documentation for more information on the parameters.
+                 ''')
 )
