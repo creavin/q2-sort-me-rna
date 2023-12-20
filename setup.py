@@ -15,7 +15,7 @@ setup(
     packages=find_packages(),
     author="Thomas Creavin",
     author_email="thomas.creavin@gmail.com",
-    description="A QIIME2 wrapper for the sequence alignment tool SortMeRNA.",
+    description="A QIIME 2 wrapper for the sequence alignment tool SortMeRNA.",
     license='BSD-3-Clause',
     url='https://qiime2.org',
     entry_points={

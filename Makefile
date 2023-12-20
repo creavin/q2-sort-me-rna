@@ -17,8 +17,10 @@ lint:
 test:
 	py.test 
 
-blast_cache: install
+install_and_refesh: install
 	qiime dev refresh-cache
+
+# Make commands for developers
 
 sortmerna:
 	rm -fdr $(sortmerna_work_dir)
@@ -81,7 +83,7 @@ artifact_ref:
 
 dev: clean 
 	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna \
+	qiime sort-me-rna align-sequences \
 	--i-reads "$(art_dir)/paired_raw_sequence.qza" \
 	--i-ref "$(art_dir)/rrna_references.qza"  \
 	--p-workdir "./$(q2smr_output_dir)" \
@@ -90,7 +92,7 @@ dev: clean
 
 devall: clean 
 	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna \
+	qiime sort-me-rna align-sequences \
 	--i-reads "$(art_dir)/raw_sequence.qza" \
 	--i-ref "$(art_dir)/rrna_references.qza"  \
 	--p-workdir "./$(q2smr_output_dir)" \
@@ -99,7 +101,7 @@ devall: clean
 
 devall_pair: clean 
 	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna \
+	qiime sort-me-rna align-sequences \
 	--i-reads "$(art_dir)/paired_raw_sequence.qza" \
 	--i-ref "$(art_dir)/rrna_references.qza"  \
 	--p-workdir "./$(q2smr_output_dir)" \
@@ -130,23 +132,13 @@ devotudenovo: clean
 
 devpair: clean 
 	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna \
+	qiime sort-me-rna align-sequences \
 	--p-ref "$(seq_dir)/rrna_references.fasta"  \
 	--p-reads-reverse "$(seq_dir)/synthetic_data_pair2.fastq" \
 	--p-workdir "./$(q2smr_output_dir)" \
 	--output-dir "./$(q2smr_output_dir)/qiime-output" \
 	--verbose
 	
-
-test_passes_arg: clean 
-	mkdir $(q2smr_output_dir)
-	qiime sort-me-rna sort-rna \
-	--p-ref "$(seq_dir)/rrna_references.fasta"  \
-	--p-reads "$(seq_dir)/synthetic_data.fastq" \
-	--p-workdir "./$(q2smr_output_dir)" \
-	--p-passes "1,1,1" \
-	--o-aligned-seq "./$(q2smr_output_dir)/qiime-output" \
-	--verbose
 
 test_vsearch:
 	mkdir -p output/outvsearch
